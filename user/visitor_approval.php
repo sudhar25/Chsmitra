@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php'; // Include DB connection
+include '../db.php'; // Include DB connection
 
 $user_id = $_SESSION['user_id']; // Logged-in user
 $society_id = $_SESSION['society_id']; // User's society
