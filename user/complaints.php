@@ -11,18 +11,31 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
-$society_id = $_SESSION['society_id']; // Assuming this is stored in session
+$society_id = $_SESSION['society_id'] ?? null; // Ensure it's set
 
 // Handle Complaint Submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_complaint'])) {
-    $complaint_text = $_POST['complaint_text'];
-    $apartment_id = $_POST['apartment_id'];
+    // Validate Inputs
+    if (empty($_POST['complaint_text']) || empty($_POST['apartment_id'])) {
+        die("Error: Complaint and Apartment ID cannot be empty.");
+    }
+
+    // Sanitize inputs
+    $complaint_text = $conn->real_escape_string($_POST['complaint_text']);
+    $apartment_id = $conn->real_escape_string($_POST['apartment_id']);
 
     // File Upload Handling
     $image_path = null;
     if (!empty($_FILES['complaint_image']['name'])) {
         $target_dir = "../uploads/";
-        $image_path = basename($_FILES["complaint_image"]["name"]);
+        
+        // Create directory if it doesn't exist
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+
+        // Generate unique file name
+        $image_path = time() . "_" . basename($_FILES["complaint_image"]["name"]);
         $target_file = $target_dir . $image_path;
         move_uploaded_file($_FILES["complaint_image"]["tmp_name"], $target_file);
     }

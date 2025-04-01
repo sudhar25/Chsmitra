@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
 $sql = "
     SELECT 
         c.complaint_id, c.society_id, c.complaint_text, c.status, c.created_at, 
-        c.image_path, c.apartment_id, u.name AS user_name 
+        c.image_path, c.apartment_id, IFNULL(u.name, 'Unknown User') AS user_name 
     FROM Complaints c 
     LEFT JOIN Users u ON c.user_id = u.user_id 
     ORDER BY c.complaint_id DESC
