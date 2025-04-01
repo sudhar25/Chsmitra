@@ -2,8 +2,12 @@
 session_start();
 include '../db.php'; // Include DB connection
 
-$user_id = $_SESSION['user_id']; // Logged-in user
-$society_id = $_SESSION['society_id']; // User's society
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['society_id'])) {
+    die("Error: User not logged in. Please log in first.");
+}
+
+$user_id = $_SESSION['user_id'];
+$society_id = $_SESSION['society_id'];
 
 // Handle new visitor request submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
