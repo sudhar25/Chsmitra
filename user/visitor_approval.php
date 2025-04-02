@@ -6,16 +6,30 @@ $user_id = $_SESSION['user_id']; // Logged-in user
 $society_id = $_SESSION['society_id']; // User's society
 
 // Handle new visitor request submission
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_request'])) {
     $visitor_name = mysqli_real_escape_string($conn, $_POST['visitor_name']);
     $contact = mysqli_real_escape_string($conn, $_POST['contact']);
     $purpose = mysqli_real_escape_string($conn, $_POST['purpose']);
 
-    $sql = "INSERT INTO Visitors (society_id, visitor_name, contact, purpose, security_approved, admin_approved) 
-            VALUES ('$society_id', '$visitor_name', '$contact', '$purpose', 0, 0)";
+    $sql = "INSERT INTO Visitors (society_id, visitor_name, contact, purpose, security_approved, admin_approved, check_out) 
+            VALUES ('$society_id', '$visitor_name', '$contact', '$purpose', 0, 0, NULL)";
     
     if (mysqli_query($conn, $sql)) {
         echo "<script>alert('Visitor request submitted successfully!'); window.location.href='visitor_requests.php';</script>";
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+}
+
+// Handle visitor check-out update
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_out'])) {
+    $visitor_id = $_POST['visitor_id'];
+    $check_out_time = date("Y-m-d H:i:s");
+
+    $sql = "UPDATE Visitors SET check_out = '$check_out_time' WHERE visitor_id = '$visitor_id' AND check_out IS NULL";
+    
+    if (mysqli_query($conn, $sql)) {
+        echo "<script>alert('Visitor checked out successfully!'); window.location.href='visitor_requests.php';</script>";
     } else {
         echo "Error: " . mysqli_error($conn);
     }
@@ -49,7 +63,7 @@ $visitor_requests = mysqli_query($conn, "SELECT * FROM Visitors WHERE society_id
                 <label class="block text-gray-700 font-semibold">Purpose</label>
                 <textarea name="purpose" required class="w-full p-2 border rounded"></textarea>
             </div>
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+            <button type="submit" name="submit_request" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
                 Submit Request
             </button>
         </form>
@@ -64,6 +78,7 @@ $visitor_requests = mysqli_query($conn, "SELECT * FROM Visitors WHERE society_id
                 <th class="border p-2">Contact</th>
                 <th class="border p-2">Purpose</th>
                 <th class="border p-2">Status</th>
+                <th class="border p-2">Check-Out</th>
             </tr>
             <?php while ($row = mysqli_fetch_assoc($visitor_requests)) { 
                 // Determine the status
@@ -80,6 +95,16 @@ $visitor_requests = mysqli_query($conn, "SELECT * FROM Visitors WHERE society_id
                     <td class="border p-2"><?php echo htmlspecialchars($row['contact']); ?></td>
                     <td class="border p-2"><?php echo htmlspecialchars($row['purpose']); ?></td>
                     <td class="border p-2"><?php echo $status; ?></td>
+                    <td class="border p-2">
+                        <?php if ($row['check_out'] == NULL && $row['admin_approved'] == 1) { ?>
+                            <form method="POST">
+                                <input type="hidden" name="visitor_id" value="<?php echo $row['visitor_id']; ?>">
+                                <button type="submit" name="check_out" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700">Check Out</button>
+                            </form>
+                        <?php } else {
+                            echo $row['check_out'] ? $row['check_out'] : "-";
+                        } ?>
+                    </td>
                 </tr>
             <?php } ?>
         </table>
