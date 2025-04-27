@@ -79,6 +79,7 @@ if (isset($_POST['login'])) {
 
         <button type="submit" name="login">Login</button>
     </form>
+    <a href="reset_pwd.php">Reset password</a>
 </div>
 
 </body>

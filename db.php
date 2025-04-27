@@ -5,7 +5,7 @@ $password = "";      // No password by default
 $database = "SocietyManagement";
 
 // Create connection
-$conn = new mysqli("localhost", "root", "", "SocietyManagement", 3306);
+$conn = new mysqli("localhost", "root", "", "SocietyManagement", 3307);
 
 // Check connection
 if ($conn->connect_error) {
