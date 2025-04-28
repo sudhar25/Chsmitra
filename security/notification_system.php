@@ -1,85 +1,115 @@
 <?php
-// Start session (to track logged-in user)
-session_start();
-
-// Include DB connection
 include '../db.php';
+require '../vendor/autoload.php'; // Only PHPMailer now
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-// Ensure user is logged in
-if (!isset($_SESSION['user_id'])) {
-    die("Error: Unauthorized access.");
+$message = "";
+
+// Function to send Email
+function sendEmail($to, $subject, $body) {
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.example.com'; // Update SMTP server
+        $mail->SMTPAuth = true;
+        $mail->Username = 'your-email@example.com';
+        $mail->Password = 'your-email-password';
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+        
+        $mail->setFrom('your-email@example.com', 'Admin');
+        $mail->addAddress($to);
+        $mail->Subject = $subject;
+        $mail->Body = $body;
+        
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
 }
 
-$user_id = $_SESSION['user_id'];
-$role = $_SESSION['role'];
+// Bulk Notification
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_bulk'])) {
+    $society_id = $_POST['society_id'];
+    $notif_message = $_POST['message'];
 
-// Handle Notification Submission (Only for Admins or Security)
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_notification'])) {
-    if ($role !== 'Admin' && $role !== 'Security') {
-        die("Error: Only Admins or Security can send notifications.");
-    }
-    
-    // Validate input
-    if (empty($_POST['notification_text'])) {
-        die("Error: Notification text cannot be empty.");
+    $stmt = $conn->prepare("SELECT user_id, email, phone FROM Users WHERE society_id = ?");
+    $stmt->bind_param("i", $society_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $stmt_insert = $conn->prepare("INSERT INTO Notifications (society_id, user_id, message) VALUES (?, ?, ?)");
+
+    while ($row = $result->fetch_assoc()) {
+        $user_id = $row['user_id'];
+        $email = $row['email'];
+
+        $stmt_insert->bind_param("iis", $society_id, $user_id, $notif_message);
+        $stmt_insert->execute();
+
+        if ($email) sendEmail($email, "New Notification", $notif_message);
     }
 
-    $notification_text = $conn->real_escape_string($_POST['notification_text']);
-    
-    // Insert notification into DB
-    $stmt = $conn->prepare("INSERT INTO Notifications (sender_id, notification_text, created_at) VALUES (?, ?, NOW())");
-    $stmt->bind_param("is", $user_id, $notification_text);
-    
-    if ($stmt->execute()) {
-        $message = "Notification sent successfully!";
-    } else {
-        $message = "Error: " . $stmt->error;
-    }
     $stmt->close();
+    $stmt_insert->close();
+    $message = "Notifications sent via Email and Database!";
 }
 
-// Fetch Notifications
-$sql = "SELECT n.notification_id, n.notification_text, n.created_at, u.username FROM Notifications n 
-        JOIN Users u ON n.sender_id = u.user_id ORDER BY n.created_at DESC";
-$result = $conn->query($sql);
+// Individual Notification
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_individual'])) {
+    $society_id = $_POST['society_id'];
+    $user_id = $_POST['user_id'];
+    $notif_message = $_POST['message'];
+
+    $stmt = $conn->prepare("SELECT email, phone FROM Users WHERE user_id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+
+    $email = $result['email'];
+
+    $stmt_insert = $conn->prepare("INSERT INTO Notifications (society_id, user_id, message) VALUES (?, ?, ?)");
+    $stmt_insert->bind_param("iis", $society_id, $user_id, $notif_message);
+    $stmt_insert->execute();
+
+    if ($email) sendEmail($email, "New Notification", $notif_message);
+
+    $stmt->close();
+    $stmt_insert->close();
+    $message = "Notification sent via Email and Database!";
+}
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Notification System</title>
+    <title>Security Notification</title>
 </head>
 <body>
 
-<h2>Send a Notification</h2>
-<?php if (isset($message)) echo "<p><strong>$message</strong></p>"; ?>
+<h2>Notification</h2>
+<?php if ($message) echo "<p><strong>$message</strong></p>"; ?>
 
-<?php if ($role === 'Admin' || $role === 'Security') { ?>
+<h3>Bulk Notification to All Users in a Society</h3>
 <form method="POST">
-    <label>Notification:</label>
-    <textarea name="notification_text" required></textarea><br>
-    <button type="submit" name="submit_notification">Send Notification</button>
+    Society ID: <input type="number" name="society_id" required><br><br>
+    Message:<br>
+    <textarea name="message" rows="4" cols="50" required></textarea><br><br>
+    <button type="submit" name="send_bulk">Send</button>
 </form>
-<?php } ?>
 
-<h2>All Notifications</h2>
-<table border="1" cellpadding="10">
-    <tr>
-        <th>ID</th>
-        <th>Sender</th>
-        <th>Notification</th>
-        <th>Sent On</th>
-    </tr>
+<hr>
 
-    <?php while ($row = $result->fetch_assoc()) { ?>
-    <tr>
-        <td><?= $row['notification_id']; ?></td>
-        <td><?= htmlspecialchars($row['username']); ?></td>
-        <td><?= htmlspecialchars($row['notification_text']); ?></td>
-        <td><?= $row['created_at']; ?></td>
-    </tr>
-    <?php } ?>
-</table>
+<h3>Send Notification to Specific User</h3>
+<form method="POST">
+    Society ID: <input type="number" name="society_id" required><br><br>
+    User ID: <input type="number" name="user_id" required><br><br>
+    Message:<br>
+    <textarea name="message" rows="4" cols="50" required></textarea><br><br>
+    <button type="submit" name="send_individual">Send</button>
+</form>
 
 </body>
 </html>

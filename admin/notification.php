@@ -1,14 +1,8 @@
 <?php
 include '../db.php';
-require '../vendor/autoload.php'; // For PHPMailer & Twilio
+require '../vendor/autoload.php'; // Only PHPMailer now
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-use Twilio\Rest\Client;
-
-// Twilio Credentials
-$twilio_sid = 'YOUR_TWILIO_SID';
-$twilio_token = 'YOUR_TWILIO_AUTH_TOKEN';
-$twilio_phone = 'YOUR_TWILIO_PHONE_NUMBER';
 
 $message = "";
 
@@ -36,24 +30,6 @@ function sendEmail($to, $subject, $body) {
     }
 }
 
-// Function to send SMS
-function sendSMS($to, $message) {
-    global $twilio_sid, $twilio_token, $twilio_phone;
-    $client = new Client($twilio_sid, $twilio_token);
-    try {
-        $client->messages->create(
-            $to,
-            [
-                'from' => $twilio_phone,
-                'body' => $message
-            ]
-        );
-        return true;
-    } catch (Exception $e) {
-        return false;
-    }
-}
-
 // Bulk Notification
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_bulk'])) {
     $society_id = $_POST['society_id'];
@@ -69,18 +45,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_bulk'])) {
     while ($row = $result->fetch_assoc()) {
         $user_id = $row['user_id'];
         $email = $row['email'];
-        $phone = $row['phone'];
 
         $stmt_insert->bind_param("iis", $society_id, $user_id, $notif_message);
         $stmt_insert->execute();
 
         if ($email) sendEmail($email, "New Notification", $notif_message);
-        if ($phone) sendSMS($phone, $notif_message);
     }
 
     $stmt->close();
     $stmt_insert->close();
-    $message = "Notifications sent via Email, SMS, and Database!";
+    $message = "Notifications sent via Email and Database!";
 }
 
 // Individual Notification
@@ -95,18 +69,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_individual'])) {
     $result = $stmt->get_result()->fetch_assoc();
 
     $email = $result['email'];
-    $phone = $result['phone'];
 
     $stmt_insert = $conn->prepare("INSERT INTO Notifications (society_id, user_id, message) VALUES (?, ?, ?)");
     $stmt_insert->bind_param("iis", $society_id, $user_id, $notif_message);
     $stmt_insert->execute();
 
     if ($email) sendEmail($email, "New Notification", $notif_message);
-    if ($phone) sendSMS($phone, $notif_message);
 
     $stmt->close();
     $stmt_insert->close();
-    $message = "Notification sent via Email, SMS, and Database!";
+    $message = "Notification sent via Email and Database!";
 }
 ?>
 
