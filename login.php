@@ -7,15 +7,14 @@ $errorMsg = "";
 
 // Handle Login
 if (isset($_POST['login'])) {
-    $user_id = intval($_POST['user_id']);
     $email = $_POST['email'];
     $role = $_POST['role'];
     $password_input = $_POST['password'];
     $society_id = intval($_POST['society_id']);
 
-    $sql = "SELECT * FROM Users WHERE user_id = ? AND email = ? AND role = ? AND society_id = ?";
+    $sql = "SELECT * FROM Users WHERE email = ? AND role = ? AND society_id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("issi", $user_id, $email, $role, $society_id);
+    $stmt->bind_param("ssi", $email, $role, $society_id);
     $stmt->execute();
     $res = $stmt->get_result();
 
@@ -26,7 +25,15 @@ if (isset($_POST['login'])) {
             $_SESSION['name'] = $user['name'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['society_id'] = $user['society_id'];
-            header("Location: home.php");
+
+            // Redirect based on the role
+            if ($user['role'] == 'Admin') {
+                header("Location: admin_dashboard.php");
+            } elseif ($user['role'] == 'Member') {
+                header("Location: member_dashboard.php");
+            } elseif ($user['role'] == 'Security Guard') {
+                header("Location: security_dashboard.php");
+            }
             exit;
         } else {
             $errorMsg = "Invalid password.";
@@ -58,9 +65,6 @@ if (isset($_POST['login'])) {
     <?php if ($errorMsg) echo "<p class='error'>$errorMsg</p>"; ?>
     <?php if ($successMsg) echo "<p class='success'>$successMsg</p>"; ?>
     <form method="POST">
-        <label>User ID:</label>
-        <input type="number" name="user_id" required><br>
-
         <label>Email:</label>
         <input type="email" name="email" required><br>
 

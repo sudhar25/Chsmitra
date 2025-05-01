@@ -7,7 +7,6 @@ $errorMsg = "";
 
 // Handle Password Reset
 if (isset($_POST['reset'])) {
-    $user_id = intval($_POST['user_id']);
     $email = $_POST['email'];
     $role = $_POST['role'];
     $society_id = intval($_POST['society_id']);
@@ -20,16 +19,17 @@ if (isset($_POST['reset'])) {
         $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
         // Verify user details
-        $sql = "SELECT * FROM Users WHERE user_id = ? AND email = ? AND role = ? AND society_id = ?";
+        $sql = "SELECT * FROM Users WHERE email = ? AND role = ? AND society_id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issi", $user_id, $email, $role, $society_id);
+        $stmt->bind_param("ssi", $email, $role, $society_id);
         $stmt->execute();
         $res = $stmt->get_result();
 
         if ($res->num_rows == 1) {
+            $user = $res->fetch_assoc();
             $sql_update = "UPDATE Users SET password_hash = ? WHERE user_id = ?";
             $stmt_update = $conn->prepare($sql_update);
-            $stmt_update->bind_param("si", $hashed_password, $user_id);
+            $stmt_update->bind_param("si", $hashed_password, $user['user_id']);
             
             if ($stmt_update->execute()) {
                 $successMsg = "Password reset successful!";
@@ -64,9 +64,6 @@ if (isset($_POST['reset'])) {
     <?php if ($errorMsg) echo "<p class='error'>$errorMsg</p>"; ?>
     <?php if ($successMsg) echo "<p class='success'>$successMsg</p>"; ?>
     <form method="POST">
-        <label>User ID:</label>
-        <input type="number" name="user_id" required><br>
-
         <label>Email:</label>
         <input type="email" name="email" required><br>
 
