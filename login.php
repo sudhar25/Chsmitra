@@ -28,11 +28,11 @@ if (isset($_POST['login'])) {
 
             // Redirect based on the role
             if ($user['role'] == 'Admin') {
-                header("Location: admin_dashboard.php");
+                header("Location: admin_home.php");
             } elseif ($user['role'] == 'Member') {
-                header("Location: member_dashboard.php");
+                header("Location: user_home.php");
             } elseif ($user['role'] == 'Security Guard') {
-                header("Location: security_dashboard.php");
+                header("Location: security_home.php");
             }
             exit;
         } else {
