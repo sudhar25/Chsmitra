@@ -9,100 +9,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"> 
+    <meta charset="UTF-8">
     <title>Admin Dashboard</title>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav>
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
         <!-- Left side: Logo -->
-        <div style="flex-shrink: 0;">
-            <img src="logo_placeholder.png" alt="Logo" width="50" height="50">
-        </div>
+        <a class="navbar-brand" href="#">
+            <img src="../Images/logo.png" alt="Logo" width="50" height="50">
+        </a>
 
         <!-- Right side: Links -->
-        <div style="display: flex; gap: 15px;">
-            <a href="../logout.php">Logout</a>
-            <a href="about_us.php">About Us</a>
-            <a href="contact_us.php">Contact Us</a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="../logout.php">Logout</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about_us.php">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="contact_us.php">Contact Us</a>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
 
-    <!-- Main content -->
+<!-- Main content -->
+<div class="container mt-4">
     <h1>Welcome, Admin!</h1>
     <p>You have access to all society management features.</p>
-    
 
     <!-- Grid blocks -->
-    <div style="display: flex; flex-wrap: wrap;">
+    <div class="row">
         <!-- Block 1 -->
-        <div style="width: 30%; margin: 1%;">
-            <img src="image1_placeholder.png" alt="Image 1" width="100%">
-            <p>Manage Users</p>
-            <button onclick="location.href='manage_users.php'">Go</button>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card">
+                <img src="image1_placeholder.png" class="card-img-top" alt="Image 1">
+                <div class="card-body">
+                    <p class="card-text">Manage Users</p>
+                    <a href="manage_users.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
 
         <!-- Block 2 -->
-        <div style="width: 30%; margin: 1%;">
-            <img src="image2_placeholder.png" alt="Image 2" width="100%">
-            <p>Register New User</p>
-            <button onclick="location.href='register.php'">Go</button>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card">
+                <img src="image2_placeholder.png" class="card-img-top" alt="Image 2">
+                <div class="card-body">
+                    <p class="card-text">Register New User</p>
+                    <a href="register.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
 
         <!-- Block 3 -->
-        <div style="width: 30%; margin: 1%;">
-            <img src="image3_placeholder.png" alt="Image 3" width="100%">
-            <p>Manage Apartments</p>
-            <button onclick="location.href='manage_apartment.php'">Go</button>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card">
+                <img src="image3_placeholder.png" class="card-img-top" alt="Image 3">
+                <div class="card-body">
+                    <p class="card-text">Manage Apartments</p>
+                    <a href="manage_apartment.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
 
         <!-- Block 4 -->
-        <div style="width: 30%; margin: 1%;">
-            <img src="image4_placeholder.png" alt="Image 4" width="100%">
-            <p>Handle Complaints</p>
-            <button onclick="location.href='manage_complaint.php'">Go</button>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card">
+                <img src="image4_placeholder.png" class="card-img-top" alt="Image 4">
+                <div class="card-body">
+                    <p class="card-text">Handle Complaints</p>
+                    <a href="manage_complaint.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
 
         <!-- Block 5 -->
-        <div style="width: 30%; margin: 1%;">
-            <img src="image5_placeholder.png" alt="Image 5" width="100%">
-            <p>Send Notifications</p>
-            <button onclick="location.href='notification.php'">Go</button>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card">
+                <img src="image5_placeholder.png" class="card-img-top" alt="Image 5">
+                <div class="card-body">
+                    <p class="card-text">Send Notifications</p>
+                    <a href="notification.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
 
         <!-- Block 6 -->
-        <div style="width: 30%; margin: 1%;">
-            <img src="image6_placeholder.png" alt="Image 6" width="100%">
-            <p>Visitor Logs</p>
-            <button onclick="location.href='visitor_logs.php'">Go</button>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card">
+                <img src="image6_placeholder.png" class="card-img-top" alt="Image 6">
+                <div class="card-body">
+                    <p class="card-text">Visitor Logs</p>
+                    <a href="visitor_logs.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
 
         <!-- Block 7 -->
-        <div style="width: 30%; margin: 1%;">
-            <img src="image7_placeholder.png" alt="Image 7" width="100%">
-            <p>Maintenance Payments</p>
-            <button onclick="location.href='maintenance.php'">Go</button>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card">
+                <img src="image7_placeholder.png" class="card-img-top" alt="Image 7">
+                <div class="card-body">
+                    <p class="card-text">Maintenance Payments</p>
+                    <a href="maintenance.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
 
         <!-- Extra Block 8 (optional) -->
-        <div style="width: 30%; margin: 1%;">
-            <img src="image8_placeholder.png" alt="Image 8" width="100%">
-            <p>Coming Soon</p>
-            <button onclick="location.href='#'">Go</button>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card">
+                <img src="image8_placeholder.png" class="card-img-top" alt="Image 8">
+                <div class="card-body">
+                    <p class="card-text">Coming Soon</p>
+                    <a href="#" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
 
         <!-- Extra Block 9 (optional) -->
-        <div style="width: 30%; margin: 1%;">
-            <img src="image9_placeholder.png" alt="Image 9" width="100%">
-            <p>Coming Soon</p>
-            <button onclick="location.href='#'">Go</button>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card">
+                <img src="image9_placeholder.png" class="card-img-top" alt="Image 9">
+                <div class="card-body">
+                    <p class="card-text">Coming Soon</p>
+                    <a href="#" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- Footer -->
-    <footer style="text-align: center; position: fixed; bottom: 0; width: 100%; background-color: #f1f1f1; padding: 10px;">
+<!-- Footer -->
+<footer class="text-center fixed-bottom bg-light py-3">
     <p>All rights are reserved by</p>
 </footer>
 

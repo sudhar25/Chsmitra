@@ -29,63 +29,105 @@ if ($result->num_rows > 0) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Bills by Society</title>
-    <style>
-        body { font-family: Arial; background: #f4f4f4; padding: 20px; }
-        h2 { margin-top: 40px; }
-        table { border-collapse: collapse; width: 100%; background: white; margin-bottom: 30px; }
-        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-        th { background: #007bff; color: white; }
-        button { padding: 6px 12px; background: #28a745; color: white; border: none; border-radius: 4px; }
-        button:hover { background: #218838; }
-        .paid { color: green; font-weight: bold; }
-        .pending { color: red; font-weight: bold; }
-    </style>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
+    </script>
 </head>
 <body>
 
-<h1>Admin Dashboard - Bill Payment Status by Society</h1>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<?php if (!empty($societies)): ?>
-    <?php foreach($societies as $society_name => $bills): ?>
-        <h2>Society: <?= htmlspecialchars($society_name) ?></h2>
-        <table>
-            <tr>
-                <th>Apartment</th>
-                <th>Owner</th>
-                <th>Bill ID</th>
-                <th>Amount (₹)</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-            <?php foreach($bills as $bill): ?>
-                <tr>
-                    <td><?= htmlspecialchars($bill['apartment_number']) ?></td>
-                    <td><?= htmlspecialchars($bill['owner_name']) ?></td>
-                    <td><?= $bill['maintenance_id'] ?></td>
-                    <td><?= $bill['amount'] ?></td>
-                    <td><?= $bill['due_date'] ?></td>
-                    <td class="<?= strtolower($bill['status']) ?>"><?= $bill['status'] ?></td>
-                    <td>
-                        <?php if ($bill['status'] == 'Pending'): ?>
-                            <form method="POST">
-                                <input type="hidden" name="maintenance_id" value="<?= $bill['maintenance_id'] ?>">
-                                <button type="submit" name="update_status">Mark as Paid</button>
-                            </form>
-                        <?php else: ?>
-                            <span class="paid">Paid</span>
-                        <?php endif; ?>
-                    </td>
-                </tr>
+<!-- Navbar -->
+<nav class="d-flex justify-content-between align-items-center bg-light px-3 py-2">
+    <div class="d-flex align-items-center">
+    <img src="../Images/logo.png" alt="Logo" width="50" height="50">
+        <div class="hamburger ml-3" onclick="toggleMenu()">☰</div>
+    </div>
+    <div class="d-flex">
+        <a href="../logout.php" class="nav-link">Logout</a>
+        <a href="about_us.php" class="nav-link">About Us</a>
+        <a href="contact_us.php" class="nav-link">Contact Us</a>
+    </div>
+</nav>
+
+<!-- Layout -->
+<div class="layout d-flex">
+    <!-- Sidebar Menu -->
+    <div id="menu" class="d-flex flex-column bg-secondary text-white p-3" style="min-width: 200px;">
+        <a href="maintanance_bill.php" class="text-white py-1">Maintenance Bill</a>
+        <a href="manage_apartment.php" class="text-white py-1">Manage Apartment</a>
+        <a href="manage_complaint.php" class="text-white py-1">Manage Complaint</a>
+        <a href="notification.php" class="text-white py-1">Notification</a>
+        <a href="view_bill.php" class="text-white py-1">View Bill</a>
+        <a href="register.php" class="text-white py-1">Register</a>
+        <a href="visitor_approval.php" class="text-white py-1">Visitor Approval</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+        <h1 class="text-center mb-4">Admin Dashboard - Bill Payment Status by Society</h1>
+
+        <?php if (!empty($societies)): ?>
+            <?php foreach($societies as $society_name => $bills): ?>
+                <h2 class="mt-4"><?= htmlspecialchars($society_name) ?></h2>
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Apartment</th>
+                            <th>Owner</th>
+                            <th>Bill ID</th>
+                            <th>Amount (₹)</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($bills as $bill): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($bill['apartment_number']) ?></td>
+                                <td><?= htmlspecialchars($bill['owner_name']) ?></td>
+                                <td><?= $bill['maintenance_id'] ?></td>
+                                <td><?= $bill['amount'] ?></td>
+                                <td><?= $bill['due_date'] ?></td>
+                                <td class="<?= strtolower($bill['status']) ?>"><?= $bill['status'] ?></td>
+                                <td>
+                                    <?php if ($bill['status'] == 'Pending'): ?>
+                                        <form method="POST">
+                                            <input type="hidden" name="maintenance_id" value="<?= $bill['maintenance_id'] ?>">
+                                            <button type="submit" name="update_status" class="btn btn-success btn-sm">Mark as Paid</button>
+                                        </form>
+                                    <?php else: ?>
+                                        <span class="badge badge-success">Paid</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             <?php endforeach; ?>
-        </table>
-    <?php endforeach; ?>
-<?php else: ?>
-    <p>No bills found.</p>
-<?php endif; ?>
+        <?php else: ?>
+            <p>No bills found.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-center bg-light py-3 mt-5">
+    <p>All rights are reserved by CHSMITHRA</p>
+</footer>
 
 </body>
 </html>

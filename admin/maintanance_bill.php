@@ -47,9 +47,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Generate Bill - Admin</title>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script>
         function calculateTotal() {
             let water = parseFloat(document.getElementById('water').value) || 0;
@@ -61,37 +64,91 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         function printForm() {
             window.print();
         }
+
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
     </script>
 </head>
 <body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<h1><b>CHSMITHRA</b></h1>
+<!-- Navbar -->
+<nav class="d-flex justify-content-between align-items-center bg-light px-3 py-2">
+    <div class="d-flex align-items-center">
+    <img src="../Images/logo.png" alt="Logo" width="50" height="50">
+        <div class="hamburger ml-3" onclick="toggleMenu()">☰</div>
+    </div>
+    <div class="d-flex">
+        <a href="../logout.php" class="nav-link">Logout</a>
+        <a href="about_us.php" class="nav-link">About Us</a>
+        <a href="contact_us.php" class="nav-link">Contact Us</a>
+    </div>
+</nav>
 
-<h2>Bill Generator</h2>
-<form method="POST">
-    <label>Society ID:</label>
-    <input type="number" name="society_id" required>
+<!-- Layout: Sidebar + Main Content -->
+<div class="layout d-flex">
+    <!-- Sidebar Menu -->
+    <div id="menu" class="d-flex flex-column bg-secondary text-white p-3" style="min-width: 200px;">
+        <a href="maintanance_bill.php" class="text-white py-1">Maintenance Bill</a>
+        <a href="manage_apartment.php" class="text-white py-1">Manage Apartment</a>
+        <a href="manage_complaint.php" class="text-white py-1">Manage Complaint</a>
+        <a href="notification.php" class="text-white py-1">Notification</a>
+        <a href="view_bill.php" class="text-white py-1">View Bill</a>
+        <a href="register.php" class="text-white py-1">Register</a>
+        <a href="visitor_approval.php" class="text-white py-1">Visitor Approval</a>
+    </div>
 
-    <label>Water Bill (₹):</label>
-    <input type="number" id="water" name="water_bill" step="0.01" oninput="calculateTotal()" required>
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+        <h1><b>CHSMITHRA</b></h1>
+        <h2>Bill Generator</h2>
+        <form method="POST">
+            <div class="form-group">
+                <label for="society_id">Society ID:</label>
+                <input type="number" class="form-control" id="society_id" name="society_id" required>
+            </div>
 
-    <label>Electricity Bill (₹):</label>
-    <input type="number" id="electricity" name="electricity_bill" step="0.01" oninput="calculateTotal()" required>
+            <div class="form-group">
+                <label for="water">Water Bill (₹):</label>
+                <input type="number" class="form-control" id="water" name="water_bill" step="0.01" oninput="calculateTotal()" required>
+            </div>
 
-    <label>Maintenance Charge (₹):</label>
-    <input type="number" id="maintenance" name="maintenance_charge" step="0.01" oninput="calculateTotal()" required>
+            <div class="form-group">
+                <label for="electricity">Electricity Bill (₹):</label>
+                <input type="number" class="form-control" id="electricity" name="electricity_bill" step="0.01" oninput="calculateTotal()" required>
+            </div>
 
-    <label>Total Amount (₹):</label>
-    <input type="number" id="total" readonly>
+            <div class="form-group">
+                <label for="maintenance">Maintenance Charge (₹):</label>
+                <input type="number" class="form-control" id="maintenance" name="maintenance_charge" step="0.01" oninput="calculateTotal()" required>
+            </div>
 
-    <label>Due Date:</label>
-    <input type="date" name="due_date" required>
+            <div class="form-group">
+                <label for="total">Total Amount (₹):</label>
+                <input type="number" class="form-control" id="total" readonly>
+            </div>
 
-    <p id="info-text">[Add your paragraph here later]</p>
+            <div class="form-group">
+                <label for="due_date">Due Date:</label>
+                <input type="date" class="form-control" name="due_date" required>
+            </div>
 
-    <button type="submit">Generate Bill</button>
-    <button type="button" onclick="printForm()">Print</button>
-</form>
+            <p id="info-text">[Add your paragraph here later]</p>
+
+            <button type="submit" class="btn btn-primary">Generate Bill</button>
+            <button type="button" class="btn btn-secondary" onclick="printForm()">Print</button>
+        </form>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-center bg-light py-3 mt-5">
+    <p>All rights are reserved by CHSMITHRA</p>
+</footer>
 
 </body>
 </html>
