@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +20,6 @@
     <p><a href="login.php">Login</a> | <a href="register.php">Register</a></p>
 </body>
 </html>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
