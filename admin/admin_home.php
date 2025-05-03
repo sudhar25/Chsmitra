@@ -57,7 +57,7 @@
             <div class="card">
                 <img src="../Images/Register.png" class="card-img-top" alt="Image 1">
                 <div class="card-body">
-                    <p class="card-text">Register New user</p>
+                    <p class="card-text"><strong>Register New user</strong></p>
                     <a href="register.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
@@ -68,7 +68,7 @@
             <div class="card">
                 <img src="../Images/Manage Apartment.png" class="card-img-top" alt="Image 2">
                 <div class="card-body">
-                    <p class="card-text">Manage Apartment</p>
+                    <p class="card-text"><strong>Manage Apartment</strong></p>
                     <a href="manage_apartment.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
@@ -79,7 +79,7 @@
             <div class="card">
                 <img src="../Images/Manage Complaint.png" class="card-img-top" alt="Image 3">
                 <div class="card-body">
-                    <p class="card-text">Manage Complaint</p>
+                    <p class="card-text"><strong>Manage Complaint</strong></p>
                     <a href="manage_complaint.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
@@ -90,7 +90,7 @@
             <div class="card">
                 <img src="../Images/Maintenance payment.png" class="card-img-top" alt="Image 4">
                 <div class="card-body">
-                    <p class="card-text">Maintanance Bill</p>
+                    <p class="card-text"><strong>Maintanance Bill</strong></p>
                     <a href="maintanance_bill.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
@@ -101,7 +101,7 @@
             <div class="card">
                 <img src="../Images/Notification.png" class="card-img-top" alt="Image 5">
                 <div class="card-body">
-                    <p class="card-text">Send Notifications</p>
+                    <p class="card-text"><strong>Send Notifications</strong></p>
                     <a href="notification.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
@@ -112,7 +112,7 @@
             <div class="card">
                 <img src="../Images/visitor.png" class="card-img-top" alt="Image 6">
                 <div class="card-body">
-                    <p class="card-text">Approve Visitor</p>
+                    <p class="card-text"><strong>Approve Visitor</strong></p>
                     <a href="visitor_approval.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
@@ -123,7 +123,7 @@
             <div class="card">
                 <img src="../Images/Maintenance payment.png" class="card-img-top" alt="Image 7">
                 <div class="card-body">
-                    <p class="card-text">View Bill</p>
+                    <p class="card-text"><strong>View Bill</strong></p>
                     <a href="view_bill.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
