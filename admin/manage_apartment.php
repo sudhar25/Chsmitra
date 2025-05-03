@@ -51,8 +51,8 @@ $result = $conn->query("
 <head>
     <meta charset="UTF-8">
     <title>Manage Apartments</title>
-    <link href="style.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <script>
         function printTable() {
             var tableContent = document.getElementById('apartmentTable').outerHTML;
@@ -86,8 +86,8 @@ $result = $conn->query("
     </div>
     <div class="d-flex">
         <a href="../logout.php" class="nav-link">Logout</a>
-        <a href="about_us.php" class="nav-link">About Us</a>
-        <a href="contact_us.php" class="nav-link">Contact Us</a>
+        <a href="admin_home.php" class="nav-link">Admin</a>
+        <a href="../home.php" class="nav-link">Home</a>
     </div>
 </nav>
 

@@ -1,4 +1,4 @@
-//<?php
+<?php
 //session_start();
 //if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
   //  header("Location: login.php");
@@ -11,8 +11,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-    <link href="style.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -37,7 +37,7 @@
                     <a class="nav-link" href="about_us.php">About Us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="contact_us.php">Contact Us</a>
+                    <a class="nav-link" href="../home.php">Home</a>
                 </li>
             </ul>
         </div>

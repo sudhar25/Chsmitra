@@ -1,151 +1,108 @@
-/* General Reset and Font */
+/* === General Reset & Base === */
 body {
+    background-color: white;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f9ff;
-    margin: 0;
-    padding: 0;
+    animation: fadeIn 1s ease-in-out;
 }
 
-/* Navbar */
+h1, h2, p, footer {
+    text-align: center;
+    animation: slideUp 1s ease-in-out;
+}
+
+/* === Navbar Styling === */
 .navbar {
-    background-color: #e3f2fd;
-    border-bottom: 1px solid #d0dce7;
+    background-color: lightblue !important;
+    padding: 0.3rem 1rem;
 }
 
 .navbar-brand img {
-    width: 50px;
-    height: 50px;
+    height: 40px;
+    width: 40px;
 }
 
-/* Hamburger and Sidebar */
-.navbar-left {
-    display: flex;
-    align-items: center;
+.navbar-nav .nav-link {
+    color: lightblue !important;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
-.hamburger {
-    font-size: 26px;
-    cursor: pointer;
-    margin-left: 10px;
-    color: #0d6efd;
+.navbar-nav .nav-link:hover {
+    color: #003366 !important;
+    transform: scale(1.1);
 }
 
-.menu {
-    background-color: #e7f1ff;
-    padding: 15px;
-    width: 220px;
-    min-height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: none;
-    flex-direction: column;
-    z-index: 1000;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-}
-
-.menu a {
-    padding: 10px;
-    text-decoration: none;
-    color: #003366;
-    font-weight: 500;
-    border-radius: 4px;
-    transition: background-color 0.2s ease-in-out;
-}
-
-.menu a:hover {
-    background-color: #cfe2ff;
-}
-
-/* Content layout */
-body.with-sidebar {
-    display: flex;
-}
-
-.main-content {
-    margin-left: 220px;
-    padding: 20px;
-    flex: 1;
-}
-
-/* Tables */
-table {
-    width: 100%;
-    background: white;
-    border-collapse: collapse;
-    margin-bottom: 30px;
-}
-
-table th, table td {
-    border: 1px solid #ccc;
-    padding: 12px;
-    text-align: center;
-}
-
-table th {
-    background-color: #0d6efd;
+/* === Sidebar Placeholder === */
+.sidebar {
+    background-color: #336699;
     color: white;
 }
 
-.paid {
-    color: green;
-    font-weight: bold;
+.sidebar a {
+    color: lightblue;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.pending {
-    color: red;
-    font-weight: bold;
-}
-
-/* Buttons */
-button, .btn {
-    background-color: #0d6efd;
+.sidebar a:hover {
+    background-color: #003366;
     color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
-    transition: background-color 0.2s ease;
+    transform: scale(1.05);
 }
 
-button:hover, .btn:hover {
-    background-color: #084298;
+/* === Button Styling === */
+.btn-primary {
+    background-color: #003366 !important;
+    border-color: #003366 !important;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-/* Card Layouts */
+.btn-primary:hover {
+    background-color: lightblue !important;
+    color: #003366 !important;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 51, 102, 0.5);
+}
+
+/* === Card & Grid Layout === */
 .card {
-    border: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: popIn 0.5s ease-in-out;
 }
 
 .card:hover {
-    transform: translateY(-4px);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.2);
 }
 
-/* Footer */
+.row > .col-md-3 {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+}
+
+/* === Footer Styling === */
 footer {
-    background-color: #e3f2fd;
-    color: #003366;
-    padding: 10px;
-    text-align: center;
+    background-color: lightblue;
+    padding: 0.3rem;
+    font-size: 0.9rem;
+    animation: slideIn 1s ease-in-out;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .menu {
-        position: absolute;
-        width: 100%;
-        height: auto;
-        min-height: unset;
-        display: none;
-        z-index: 1000;
-    }
+/* === Animations === */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
 
-    .main-content {
-        margin-left: 0;
-    }
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
 
-    .menu.show {
-        display: flex;
-    }
+@keyframes slideIn {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }

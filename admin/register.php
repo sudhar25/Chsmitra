@@ -28,8 +28,8 @@ if (isset($_POST['register'])) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link href="style.css" rel="stylesheet">
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css">
   <title>Register User</title>
   <script>
     function toggleMenu() {
@@ -48,8 +48,8 @@ if (isset($_POST['register'])) {
     </div>
     <div class="d-none d-md-flex">
       <a href="../logout.php" class="nav-link">Logout</a>
-      <a href="about_us.php" class="nav-link">About Us</a>
-      <a href="contact_us.php" class="nav-link">Contact Us</a>
+      <a href="admin_home.php" class="nav-link">Admin</a>
+      <a href="../home.php" class="nav-link">Home</a>
     </div>
   </nav>
 
@@ -57,7 +57,7 @@ if (isset($_POST['register'])) {
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
-      <div id="sidebar" class="col-md-2 bg-secondary text-white py-3 d-block">
+      <div id="sidebar" class="col-md-2 bg-secondary text-white py-2 d-block">
         <a href="maintanance_bill.php" class="d-block text-white py-2">Maintenance Bill</a>
         <a href="manage_apartment.php" class="d-block text-white py-2">Manage Apartment</a>
         <a href="manage_complaint.php" class="d-block text-white py-2">Manage Complaint</a>

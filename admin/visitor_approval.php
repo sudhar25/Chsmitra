@@ -28,8 +28,8 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Approve Visitors</title>
-    <link href="style.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -45,8 +45,8 @@ $result = $conn->query($sql);
     </div>
     <div class="d-flex">
         <a href="../logout.php" class="nav-link">Logout</a>
-        <a href="about_us.php" class="nav-link">About Us</a>
-        <a href="contact_us.php" class="nav-link">Contact Us</a>
+        <a href="admin_home.php" class="nav-link">Admin</a>
+        <a href="../home.php" class="nav-link">Home</a>
     </div>
 </nav>
 
