@@ -24,7 +24,8 @@
     <div class="container-fluid">
         <!-- Left side: Logo -->
         <a class="navbar-brand" href="#">
-            <img src="../Images/logo.png" alt="Logo" width="50" height="50">
+        <img src="../Images/logo.png" alt="Logo" 
+        style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
         </a>
 
         <!-- Right side: Links -->
@@ -54,10 +55,10 @@
         <!-- Block 1 -->
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card">
-                <img src="image1_placeholder.png" class="card-img-top" alt="Image 1">
+                <img src="../Images/Register.png" class="card-img-top" alt="Image 1">
                 <div class="card-body">
-                    <p class="card-text">Manage Users</p>
-                    <a href="manage_users.php" class="btn btn-primary">Go</a>
+                    <p class="card-text">Register New user</p>
+                    <a href="register.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>
@@ -65,10 +66,10 @@
         <!-- Block 2 -->
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card">
-                <img src="image2_placeholder.png" class="card-img-top" alt="Image 2">
+                <img src="../Images/Manage Apartment.png" class="card-img-top" alt="Image 2">
                 <div class="card-body">
-                    <p class="card-text">Register New User</p>
-                    <a href="register.php" class="btn btn-primary">Go</a>
+                    <p class="card-text">Manage Apartment</p>
+                    <a href="manage_apartment.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>
@@ -76,10 +77,10 @@
         <!-- Block 3 -->
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card">
-                <img src="image3_placeholder.png" class="card-img-top" alt="Image 3">
+                <img src="../Images/Manage Complaint.png" class="card-img-top" alt="Image 3">
                 <div class="card-body">
-                    <p class="card-text">Manage Apartments</p>
-                    <a href="manage_apartment.php" class="btn btn-primary">Go</a>
+                    <p class="card-text">Manage Complaint</p>
+                    <a href="manage_complaint.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>
@@ -87,10 +88,10 @@
         <!-- Block 4 -->
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card">
-                <img src="image4_placeholder.png" class="card-img-top" alt="Image 4">
+                <img src="../Images/Maintenance payment.png" class="card-img-top" alt="Image 4">
                 <div class="card-body">
-                    <p class="card-text">Handle Complaints</p>
-                    <a href="manage_complaint.php" class="btn btn-primary">Go</a>
+                    <p class="card-text">Maintanance Bill</p>
+                    <a href="maintanance_bill.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>
@@ -98,7 +99,7 @@
         <!-- Block 5 -->
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card">
-                <img src="image5_placeholder.png" class="card-img-top" alt="Image 5">
+                <img src="../Images/Notification.png" class="card-img-top" alt="Image 5">
                 <div class="card-body">
                     <p class="card-text">Send Notifications</p>
                     <a href="notification.php" class="btn btn-primary">Go</a>
@@ -109,10 +110,10 @@
         <!-- Block 6 -->
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card">
-                <img src="image6_placeholder.png" class="card-img-top" alt="Image 6">
+                <img src="../Images/visitor.png" class="card-img-top" alt="Image 6">
                 <div class="card-body">
-                    <p class="card-text">Visitor Logs</p>
-                    <a href="visitor_logs.php" class="btn btn-primary">Go</a>
+                    <p class="card-text">Approve Visitor</p>
+                    <a href="visitor_approval.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>
@@ -120,10 +121,10 @@
         <!-- Block 7 -->
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card">
-                <img src="image7_placeholder.png" class="card-img-top" alt="Image 7">
+                <img src="../Images/Maintenance payment.png" class="card-img-top" alt="Image 7">
                 <div class="card-body">
-                    <p class="card-text">Maintenance Payments</p>
-                    <a href="maintenance.php" class="btn btn-primary">Go</a>
+                    <p class="card-text">View Bill</p>
+                    <a href="view_bill.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>
@@ -153,9 +154,10 @@
 </div>
 
 <!-- Footer -->
-<footer class="text-center fixed-bottom bg-light py-3">
-    <p>All rights are reserved by</p>
+<footer class="text-center" style="background-color: #ADD8E6; padding: 10px; margin-top: 20px; font-size: 0.85rem;">
+    <p style="margin: 0;">© 2025 CHSMITRA. All rights reserved.</p>
 </footer>
+
 
 </body>
 </html>

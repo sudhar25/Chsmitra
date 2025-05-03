@@ -12,7 +12,7 @@ h1, h2, p, footer {
 
 /* === Navbar Styling === */
 .navbar {
-    background-color: lightblue !important;
+    background-color:lightblue !important;
     padding: 0.3rem 1rem;
 }
 
@@ -22,7 +22,7 @@ h1, h2, p, footer {
 }
 
 .navbar-nav .nav-link {
-    color: lightblue !important;
+    color: darkblue !important;
     transition: color 0.3s ease, transform 0.3s ease;
 }
 
@@ -47,6 +47,30 @@ h1, h2, p, footer {
     color: white;
     transform: scale(1.05);
 }
+/* === Sidebar Styling === */
+.sidebar {
+    background-color: #336699; /* Slightly dark blue */
+    color: white;
+    min-width: 200px;
+    height: 100vh;
+    animation: slideIn 1s ease-in-out;
+}
+
+.sidebar-link {
+    color: lightblue;
+    text-decoration: none;
+    padding: 10px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.sidebar-link:hover {
+    background-color: #003366; /* Darker blue on hover */
+    color: white;
+    transform: scale(1.05); /* Zoom on hover */
+    box-shadow: 0 0 8px rgba(0, 51, 102, 0.5); /* Bloom effect */
+}
+
 
 /* === Button Styling === */
 .btn-primary {

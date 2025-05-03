@@ -40,32 +40,69 @@ if (isset($_POST['register'])) {
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-light bg-light justify-content-between px-3">
+<nav class="d-flex justify-content-between align-items-center px-3 py-2" style="background-color: lightblue;">
     <div class="d-flex align-items-center">
-      <img src="../Images/logo.png" alt="Logo" width="50" height="50">
-      <span class="d-md-none ml-3" onclick="toggleMenu()" style="font-size: 28px; cursor: pointer;">☰</span>
+    <img src="../Images/logo.png" alt="Logo" 
+    style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
+        <div class="hamburger ml-3" onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem;">☰</div>
     </div>
-    <div class="d-none d-md-flex">
-      <a href="../logout.php" class="nav-link">Logout</a>
-      <a href="admin_home.php" class="nav-link">Admin</a>
-      <a href="../home.php" class="nav-link">Home</a>
+    <div class="d-flex">
+        <a href="../logout.php" class="nav-link"
+           style="color: #003366; transition: 0.3s;"
+           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
+           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Logout</a>
+        <a href="admin_home.php" class="nav-link"
+           style="color: #003366; transition: 0.3s;"
+           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
+           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Admin</a>
+        <a href="../home.php" class="nav-link"
+           style="color: #003366; transition: 0.3s;"
+           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
+           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Home</a>
     </div>
-  </nav>
+</nav>
 
-  <!-- Main Layout -->
-  <div class="container-fluid">
-    <div class="row">
-      <!-- Sidebar -->
-      <div id="sidebar" class="col-md-2 bg-secondary text-white py-2 d-block">
-        <a href="maintanance_bill.php" class="d-block text-white py-2">Maintenance Bill</a>
-        <a href="manage_apartment.php" class="d-block text-white py-2">Manage Apartment</a>
-        <a href="manage_complaint.php" class="d-block text-white py-2">Manage Complaint</a>
-        <a href="notification.php" class="d-block text-white py-2">Notification</a>
-        <a href="view_bill.php" class="d-block text-white py-2">View Bill</a>
-        <a href="register.php" class="d-block text-white py-2">Register</a>
-        <a href="visitor_approval.php" class="d-block text-white py-2">Visitor Approval</a>
-      </div>
+<!-- Layout: Sidebar + Main Content -->
+<div class="layout d-flex" style="min-height: 100vh;">
+    <!-- Sidebar Menu -->
+    <div id="menu" class="d-flex flex-column text-white p-3"
+         style="min-width: 200px; background-color: #336699; height: 100%;">
+        <a href="maintanance_bill.php" class="text-white py-1"
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Maintenance Bill</a>
+
+           <a href="manage_apartment.php" class="text-white py-1" 
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Manage Apartment</a>
+
+        <a href="manage_complaint.php" class="text-white py-1" 
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Manage Complaint</a>
+
+        <a href="notification.php" class="text-white py-1" 
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Notification</a>
+
+        <a href="view_bill.php" class="text-white py-1" 
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">View Bill</a>
+
+        <a href="register.php" class="text-white py-1" 
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Register</a>
+
+        <a href="visitor_approval.php" class="text-white py-1"
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Visitor Approval</a>
+    </div>
+
 
       <!-- Main Content -->
       <div class="col-md-9 p-4">
@@ -106,9 +143,10 @@ if (isset($_POST['register'])) {
   </div>
 
   <!-- Footer -->
-  <footer class="text-center mt-5 bg-light py-3">
-    <p>All rights are reserved by CHSMITHRA</p>
-  </footer>
+  <footer class="text-center" style="background-color: #ADD8E6; padding: 10px; margin-top: 20px; font-size: 0.85rem;">
+    <p style="margin: 0;">© 2025 CHSMITRA. All rights reserved.</p>
+</footer>
+
 
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
