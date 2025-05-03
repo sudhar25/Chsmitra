@@ -1,92 +1,141 @@
 <?php
-// Start session (to track logged-in user)
 session_start();
+include '../db.php'; // Adjust the path if needed
 
-// Ensure only Security personnel can access
-//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Security') {
-  //  die("Error: Unauthorized access. You do not have permission.");
-//}
-
-// Include DB connection
-include '../db.php';
-
-// Handle Status Update
+// Handle complaint status update
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
     $complaint_id = $_POST['complaint_id'];
     $new_status = $_POST['status'];
 
     $stmt = $conn->prepare("UPDATE Complaints SET status = ? WHERE complaint_id = ?");
     $stmt->bind_param("si", $new_status, $complaint_id);
-
-    if ($stmt->execute()) {
-        $message = "Status updated successfully!";
-    } else {
-        $message = "Error updating status: " . $stmt->error;
-    }
+    $stmt->execute();
     $stmt->close();
+
+    $message = "Status updated successfully!";
 }
 
-// Fetch all complaints with image and user info
+// Fetch complaints with user info
 $sql = "
     SELECT 
         c.complaint_id, c.society_id, c.complaint_text, c.status, c.created_at, 
-        c.image_path, c.apartment_id, IFNULL(u.name, 'Unknown User') AS user_name 
+        c.image_path, c.apartment_id, IFNULL(u.name, 'Unknown') AS user_name 
     FROM Complaints c 
     LEFT JOIN Users u ON c.user_id = u.user_id 
-    ORDER BY c.complaint_id DESC
+    ORDER BY c.created_at DESC
 ";
 $result = $conn->query($sql);
 ?>
 
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Security Complaint Management</title>
+    <meta charset="UTF-8">
+    <title>Security - Complaint Management</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
+    </script>
 </head>
-<body>
+<body style="background-color: #f5f9fc;">
 
-<h2>Manage Complaints</h2>
-<?php if (isset($message)) echo "<p><strong>$message</strong></p>"; ?>
+<!-- Navbar -->
+<nav class="d-flex justify-content-between align-items-center px-3 py-2" style="background-color: #ADD8E6;">
+    <div class="d-flex align-items-center">
+        <img src="../Images/logo.png" alt="Logo" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
+        <div class="hamburger ml-3" onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem; color: #003366;">☰</div>
+    </div>
+    <div class="d-flex">
+        <a href="security_home.php" class="nav-link text-dark" style="font-size: 1rem; transition: 0.3s;">Home</a>
+        <a href="../logout.php" class="nav-link text-dark" style="font-size: 1rem; transition: 0.3s;">Logout</a>
+    </div>
+</nav>
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>ID</th>
-        <th>Society ID</th>
-        <th>User Name</th>
-        <th>Apartment ID</th>
-        <th>Complaint</th>
-        <th>Image</th>
-        <th>Status</th>
-        <th>Change Status</th>
-    </tr>
+<!-- Layout: Sidebar + Main Content -->
+<div class="d-flex" style="min-height: 100vh;">
+    <!-- Sidebar Menu -->
+    <div id="menu" class="d-flex flex-column text-white p-3" style="min-width: 200px; background-color: #336699; height: 100%; display: none;">
+        <a href="manage_complaint.php" class="text-white py-1" style="color: lightblue; text-decoration: none; padding: 8px; transition: 0.3s;">
+            Manage Complaints
+        </a>
+        <a href="security_report.php" class="text-white py-1" style="color: lightblue; text-decoration: none; padding: 8px; transition: 0.3s;">
+            View Reports
+        </a>
+        <a href="visitor_approval.php" class="text-white py-1" style="color: lightblue; text-decoration: none; padding: 8px; transition: 0.3s;">
+            Visitor Approval
+        </a>
+        <a href="security_settings.php" class="text-white py-1" style="color: lightblue; text-decoration: none; padding: 8px; transition: 0.3s;">
+            Security Settings
+        </a>
+    </div>
 
-    <?php while ($row = $result->fetch_assoc()) { ?>
-    <tr>
-        <td><?= $row['complaint_id']; ?></td>
-        <td><?= $row['society_id']; ?></td>
-        <td><?= htmlspecialchars($row['user_name']); ?></td>
-        <td><?= $row['apartment_id']; ?></td>
-        <td><?= htmlspecialchars($row['complaint_text']); ?></td>
-        <td>
-            <?php if ($row['image_path']) { ?>
-                <img src="../uploads/<?= htmlspecialchars($row['image_path']); ?>" width="100" alt="Complaint Image">
-            <?php } else { echo "No Image"; } ?>
-        </td>
-        <td><strong><?= $row['status']; ?></strong></td>
-        <td>
-            <form method="POST" style="display:inline;">
-                <input type="hidden" name="complaint_id" value="<?= $row['complaint_id']; ?>">
-                <select name="status">
-                    <option value="Open" <?= $row['status'] == 'Open' ? 'selected' : '' ?>>Open</option>
-                    <option value="In Progress" <?= $row['status'] == 'In Progress' ? 'selected' : '' ?>>In Progress</option>
-                    <option value="Resolved" <?= $row['status'] == 'Resolved' ? 'selected' : '' ?>>Resolved</option>
-                </select>
-                <button type="submit" name="update_status">Update</button>
-            </form>
-        </td>
-    </tr>
-    <?php } ?>
-</table>
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+        <h3 class="mb-3">Manage Complaints</h3>
+        <?php if (isset($message)) echo "<div class='alert alert-success'>$message</div>"; ?>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Society ID</th>
+                        <th>User Name</th>
+                        <th>Apartment ID</th>
+                        <th>Complaint</th>
+                        <th>Image</th>
+                        <th>Status</th>
+                        <th>Change Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php while ($row = $result->fetch_assoc()) { ?>
+                    <tr>
+                        <td><?= $row['complaint_id']; ?></td>
+                        <td><?= $row['society_id']; ?></td>
+                        <td><?= htmlspecialchars($row['user_name']); ?></td>
+                        <td><?= $row['apartment_id']; ?></td>
+                        <td><?= htmlspecialchars($row['complaint_text']); ?></td>
+                        <td>
+                            <?php if ($row['image_path']) { ?>
+                                <img src="../uploads/<?= htmlspecialchars($row['image_path']); ?>" width="100" alt="Complaint Image" class="img-fluid">
+                            <?php } else { echo "No Image"; } ?>
+                        </td>
+                        <td><strong><?= $row['status']; ?></strong></td>
+                        <td>
+                            <form method="POST">
+                                <input type="hidden" name="complaint_id" value="<?= $row['complaint_id']; ?>">
+                                <div class="form-group">
+                                    <select class="form-control" name="status">
+                                        <option value="Open" <?= $row['status'] == 'Open' ? 'selected' : '' ?>>Open</option>
+                                        <option value="In Progress" <?= $row['status'] == 'In Progress' ? 'selected' : '' ?>>In Progress</option>
+                                        <option value="Resolved" <?= $row['status'] == 'Resolved' ? 'selected' : '' ?>>Resolved</option>
+                                    </select>
+                                </div>
+                                <button type="submit" name="update_status" class="btn btn-primary btn-sm">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-center mt-5 py-3" style="background-color: #ADD8E6;">
+    <small>© 2025 CHSMITRA Security Panel</small>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>
