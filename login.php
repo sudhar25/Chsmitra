@@ -1,90 +1,171 @@
-<?php
-session_start();
-include 'db.php';
-
-$successMsg = "";
-$errorMsg = "";
-
-// Handle Login
-if (isset($_POST['login'])) {
-    $email = $_POST['email'];
-    $role = $_POST['role'];
-    $password_input = $_POST['password'];
-    $society_id = intval($_POST['society_id']);
-
-    $sql = "SELECT * FROM Users WHERE email = ? AND role = ? AND society_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssi", $email, $role, $society_id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-
-    if ($res->num_rows == 1) {
-        $user = $res->fetch_assoc();
-        if (password_verify($password_input, $user['password_hash'])) {
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['name'] = $user['name'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['society_id'] = $user['society_id'];
-
-            // Redirect based on the role
-            if ($user['role'] == 'Admin') {
-                header("Location: admin_home.php");
-            } elseif ($user['role'] == 'Member') {
-                header("Location: user_home.php");
-            } elseif ($user['role'] == 'Security Guard') {
-                header("Location: security_home.php");
-            }
-            exit;
-        } else {
-            $errorMsg = "Invalid password.";
-        }
-    } else {
-        $errorMsg = "No user found with the provided details.";
-    }
-}
-?>
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
-    <style>
-        body { font-family: Arial; background: #f0f0f0; padding: 30px; }
-        .form-box { background: #fff; padding: 20px; border-radius: 10px; width: 350px; margin: auto; margin-bottom: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        input, select { width: 100%; padding: 8px; margin: 5px 0; }
-        button { padding: 10px; width: 100%; background: #28a745; color: white; border: none; border-radius: 5px; }
-        button:hover { background: #218838; }
-        .error { color: red; margin-top: 10px; }
-        .success { color: green; margin-top: 10px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CHSmitra - Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(rgba(0, 0, 86, 0.5), rgba(0, 0, 86, 0.5)), url('images/login.png') no-repeat center center fixed;
+      background-size: 75%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.88);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 80, 0.15);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      animation: iosSlideUp 0.8s ease-out forwards;
+      opacity: 0;
+      transform: translateY(100px);
+      position: relative;
+    }
+
+    @keyframes iosSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(100px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo-container {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: white;
+      padding: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.3s ease;
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    .login-container h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #000056;
+      margin-bottom: 20px;
+      margin-top: 60px;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 1rem;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: #f9f9f9;
+    }
+
+    .login-input:focus {
+      border-color: #000056;
+      background: #e6f2ff;
+      outline: none;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px 0;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0077cc, #000056);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background: linear-gradient(135deg, #000056, #002244);
+      transform: translateY(-2px) scale(1.05);
+    }
+
+    .reset-password {
+      font-size: 0.9rem;
+      color: #000056;
+      text-decoration: none;
+    }
+
+    .reset-password:hover {
+      text-decoration: underline;
+      color: #001144;
+    }
+
+    .login-container a {
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .login-container {
+        padding: 30px;
+      }
+
+      .logo-container {
+        width: 80px;
+        height: 80px;
+      }
+
+      .login-container h1 {
+        margin-top: 50px;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<div class="form-box">
-    <h2>Login</h2>
-    <?php if ($errorMsg) echo "<p class='error'>$errorMsg</p>"; ?>
-    <?php if ($successMsg) echo "<p class='success'>$successMsg</p>"; ?>
-    <form method="POST">
-        <label>Email:</label>
-        <input type="email" name="email" required><br>
-
-        <label>Role:</label>
-        <select name="role" required>
-            <option value="Admin">Admin</option>
-            <option value="Member">Member</option>
-            <option value="Security Guard">Security Guard</option>
-        </select><br>
-
-        <label>Society ID:</label>
-        <input type="number" name="society_id" required><br>
-
-        <label>Password:</label>
-        <input type="password" name="password" required><br>
-
-        <button type="submit" name="login">Login</button>
+  <div class="login-container" data-aos="fade-up">
+    <div class="logo-container">
+      <img src="Images/logo.png" alt="CHSmitra Logo">
+    </div>
+    <h1>Login to CHSmitra</h1>
+    <form action="#" method="post">
+      <input type="email" name="email" class="login-input" placeholder="Email Address" required />
+      <input type="password" name="password" class="login-input" placeholder="Password" required />
+      <button type="submit" class="login-btn">Login</button>
     </form>
-    <a href="reset_pwd.php">Reset password</a>
-</div>
+    <a href="reset_pwd.php" class="reset-password">Reset Password?</a>
+  </div>
 
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+  </script>
 </body>
 </html>
