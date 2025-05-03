@@ -1,79 +1,127 @@
-//<?php
+<?php
 //session_start();
 //if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
   //  header("Location: login.php");
   //  exit();
 //}
 //?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"> 
+    <meta charset="UTF-8">
     <title>User Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav>
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
-            <!-- Left side: Logo -->
-            <div style="flex-shrink: 0;">
-                <img src="logo_placeholder.png" alt="Logo" width="50" height="50">
-            </div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-            <!-- Right side: Links -->
-            <div style="display: flex; gap: 15px;">
-                <a href="../logout.php">Logout</a>
-                <a href="about_us.php">About Us</a>
-                <a href="contact_us.php">Contact Us</a>
-            </div>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Left side: Logo -->
+        <a class="navbar-brand" href="#">
+            <img src="../Images/logo.png" alt="Logo" 
+            style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
+        </a>
+
+        <!-- Right side: Links -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="../logout.php">Logout</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about_us.php">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="contact_us.php">Contact Us</a>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Main content -->
+<!-- Main content -->
+<div class="container mt-4">
     <h1>Welcome, User!</h1>
     <p>You have access to all society management features.</p>
-    
 
-    <!-- Row 1: 3 Blocks -->
-    <div style="display: flex; justify-content: space-around; margin-top: 30px;">
-        <div style="width: 30%;">
-            <img src="notifications.png" alt="Notifications" width="100%">
-            <p>Check your latest notifications</p>
-            <button onclick="location.href='view_notifications.php'">Go</button>
+    <!-- Grid blocks -->
+    <div class="row">
+        <!-- Block 1 -->
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card">
+                <img src="../Images/Notification.png" class="card-img-top" alt="Notifications">
+                <div class="card-body">
+                    <p class="card-text"><strong>Check your latest notifications</strong></p>
+                    <a href="view_notifications.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
 
-        <div style="width: 30%;">
-            <img src="complaints.png" alt="Complaints" width="100%">
-            <p>Submit or view complaints</p>
-            <button onclick="location.href='complaints.php'">Go</button>
+        <!-- Block 2 -->
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card">
+                <img src="../Images/Manage Complaint.png" class="card-img-top" alt="Complaints">
+                <div class="card-body">
+                    <p class="card-text"><strong>Submit or view complaints</strong></p>
+                    <a href="complaints.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
 
-        <div style="width: 30%;">
-            <img src="bills.png" alt="Bill Payments" width="100%">
-            <p>View and pay your bills</p>
-            <button onclick="location.href='bill_payments.php'">Go</button>
+        <!-- Block 3 -->
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card">
+                <img src="../Images/Maintenance payment.png" class="card-img-top" alt="Bill Payments">
+                <div class="card-body">
+                    <p class="card-text"><strong>View and pay your bills</strong></p>
+                    <a href="bill_payments.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Block 4 -->
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card">
+                <img src="../Images/user profile.png" class="card-img-top" alt="Profile">
+                <div class="card-body">
+                    <p class="card-text"><strong>View or edit your profile</strong></p>
+                    <a href="profile.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Block 5 -->
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card">
+                <img src="../Images/visitor.png" class="card-img-top" alt="Services">
+                <div class="card-body">
+                    <p class="card-text"><strong>Visitor Approval</strong></p>
+                    <a href="services.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Block 6 -->
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card">
+                <img src="image6_placeholder.png" class="card-img-top" alt="Coming Soon">
+                <div class="card-body">
+                    <p class="card-text"><strong>Coming Soon</strong></p>
+                    <a href="#" class="btn btn-primary">Go</a>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- Row 2: 2 Blocks -->
-    <div style="display: flex; justify-content: space-evenly; margin-top: 30px;">
-        <div style="width: 30%;">
-            <img src="profile.png" alt="Profile" width="100%">
-            <p>View or edit your profile</p>
-            <button onclick="location.href='profile.php'">Go</button>
-        </div>
-
-        <div style="width: 30%;">
-            <img src="services.png" alt="Services" width="100%">
-            <p>Access society services</p>
-            <button onclick="location.href='services.php'">Go</button>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer style="text-align: center; position: fixed; bottom: 0; width: 100%; background-color: #f1f1f1; padding: 10px;">
-    <p>All rights are reserved by</p>
+<!-- Footer -->
+<footer class="text-center" style="background-color: #ADD8E6; padding: 10px; margin-top: 20px; font-size: 0.85rem;">
+    <p style="margin: 0;">© 2025 CHSMITRA. All rights reserved.</p>
 </footer>
 
 </body>

@@ -1,0 +1,132 @@
+/* === General Reset & Base === */
+body {
+    background-color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    animation: fadeIn 1s ease-in-out;
+}
+
+h1, h2, p, footer {
+    text-align: center;
+    animation: slideUp 1s ease-in-out;
+}
+
+/* === Navbar Styling === */
+.navbar {
+    background-color:lightblue !important;
+    padding: 0.3rem 1rem;
+}
+
+.navbar-brand img {
+    height: 40px;
+    width: 40px;
+}
+
+.navbar-nav .nav-link {
+    color: darkblue !important;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #003366 !important;
+    transform: scale(1.1);
+}
+
+/* === Sidebar Placeholder === */
+.sidebar {
+    background-color: #336699;
+    color: white;
+}
+
+.sidebar a {
+    color: lightblue;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar a:hover {
+    background-color: #003366;
+    color: white;
+    transform: scale(1.05);
+}
+/* === Sidebar Styling === */
+.sidebar {
+    background-color: #336699; /* Slightly dark blue */
+    color: white;
+    min-width: 200px;
+    height: 100vh;
+    animation: slideIn 1s ease-in-out;
+}
+
+.sidebar-link {
+    color: lightblue;
+    text-decoration: none;
+    padding: 10px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.sidebar-link:hover {
+    background-color: #003366; /* Darker blue on hover */
+    color: white;
+    transform: scale(1.05); /* Zoom on hover */
+    box-shadow: 0 0 8px rgba(0, 51, 102, 0.5); /* Bloom effect */
+}
+
+
+/* === Button Styling === */
+.btn-primary {
+    background-color: #003366 !important;
+    border-color: #003366 !important;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: lightblue !important;
+    color: #003366 !important;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 51, 102, 0.5);
+}
+
+/* === Card & Grid Layout === */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: popIn 0.5s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.2);
+}
+
+.row > .col-md-3 {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+}
+
+/* === Footer Styling === */
+footer {
+    background-color: lightblue;
+    padding: 0.3rem;
+    font-size: 0.9rem;
+    animation: slideIn 1s ease-in-out;
+}
+
+/* === Animations === */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
