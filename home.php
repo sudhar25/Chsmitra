@@ -223,7 +223,7 @@
     <div class="overlay"></div>
     <div class="navbar">
       <div class="brand">
-        <img src="https://via.placeholder.com/60" alt="Logo" />
+        <img src="Images/logo.png" alt="logo" />
         <span>CHS Mitra</span>
       </div>
     </div>
