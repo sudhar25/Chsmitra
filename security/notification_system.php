@@ -1,3 +1,89 @@
+<?php
+include '../db.php';
+require '../vendor/autoload.php'; // Only PHPMailer now
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
+$message = "";
+
+// Function to send Email
+function sendEmail($to, $subject, $body) {
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host = $_ENV['SMTP1_HOST'];
+        $mail->SMTPAuth = true;
+        $mail->Username = $_ENV['SMTP1_USERNAME'];
+        $mail->Password = $_ENV['SMTP1_PASSWORD'];
+        $mail->SMTPSecure = $_ENV['SMTP1_SECURE'];
+        $mail->Port = $_ENV['SMTP1_PORT'];
+        
+        
+        $mail->setFrom($_ENV['SMTP1_USERNAME'], $_ENV['SMTP1_FROM_NAME']);
+        $mail->addAddress($to);
+        $mail->Subject = $subject;
+        $mail->Body = $body;
+        
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+// Bulk Notification
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_bulk'])) {
+    $society_id = $_POST['society_id'];
+    $notif_message = $_POST['message'];
+
+    $stmt = $conn->prepare("SELECT user_id, email, phone FROM Users WHERE society_id = ?");
+    $stmt->bind_param("i", $society_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $stmt_insert = $conn->prepare("INSERT INTO Notifications (society_id, user_id, message) VALUES (?, ?, ?)");
+
+    while ($row = $result->fetch_assoc()) {
+        $user_id = $row['user_id'];
+        $email = $row['email'];
+
+        $stmt_insert->bind_param("iis", $society_id, $user_id, $notif_message);
+        $stmt_insert->execute();
+
+        if ($email) sendEmail($email, "New Notification", $notif_message);
+    }
+
+    $stmt->close();
+    $stmt_insert->close();
+    $message = "Notifications sent via Email and Database!";
+}
+
+// Individual Notification
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_individual'])) {
+    $society_id = $_POST['society_id'];
+    $user_id = $_POST['user_id'];
+    $notif_message = $_POST['message'];
+
+    $stmt = $conn->prepare("SELECT email, phone FROM Users WHERE user_id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+
+    $email = $result['email'];
+
+    $stmt_insert = $conn->prepare("INSERT INTO Notifications (society_id, user_id, message) VALUES (?, ?, ?)");
+    $stmt_insert->bind_param("iis", $society_id, $user_id, $notif_message);
+    $stmt_insert->execute();
+
+    if ($email) sendEmail($email, "New Notification", $notif_message);
+
+    $stmt->close();
+    $stmt_insert->close();
+    $message = "Notification sent via Email and Database!";
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

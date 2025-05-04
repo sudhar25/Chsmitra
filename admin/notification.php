@@ -4,6 +4,10 @@ require '../vendor/autoload.php'; // Only PHPMailer now
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
+
 $message = "";
 
 // Function to send Email
@@ -11,14 +15,14 @@ function sendEmail($to, $subject, $body) {
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
-        $mail->Host = 'smtp.example.com'; // Update SMTP server
+        $mail->Host = $_ENV['SMTP_HOST'];
         $mail->SMTPAuth = true;
-        $mail->Username = 'your-email@example.com';
-        $mail->Password = 'your-email-password';
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
+        $mail->Username = $_ENV['SMTP_USERNAME'];
+        $mail->Password = $_ENV['SMTP_PASSWORD'];
+        $mail->SMTPSecure = $_ENV['SMTP_SECURE'];
+        $mail->Port = $_ENV['SMTP_PORT'];
         
-        $mail->setFrom('your-email@example.com', 'Admin');
+        $mail->setFrom($_ENV['SMTP_USERNAME'], $_ENV['SMTP_FROM_NAME']);
         $mail->addAddress($to);
         $mail->Subject = $subject;
         $mail->Body = $body;
