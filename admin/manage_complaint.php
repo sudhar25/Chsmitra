@@ -1,8 +1,10 @@
 <?php
-// Start session (optional if login is handled)
 session_start();
+//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
+  //  header("Location: login.php");
+  //  exit();
+//}
 
-// Include DB connection
 include '../db.php';
 
 // Handle Status Update

@@ -2,16 +2,12 @@
 // Start session (to track logged-in user)
 session_start();
 
-// Include DB connection
+//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
+  //  header("Location: login.php");
+    //exit();
+//}
 include '../db.php';
 
-// Ensure user is logged in
-if (!isset($_SESSION['user_id'])) {
-    die("Error: Please log in to submit complaints.");
-}
-
-$user_id = $_SESSION['user_id'];
-$society_id = $_SESSION['society_id'] ?? null; // Ensure it's set
 
 // Handle Complaint Submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_complaint'])) {

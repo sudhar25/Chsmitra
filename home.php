@@ -228,9 +228,11 @@
       </div>
     </div>
     <div class="content" data-aos="fade-up">
-      <h1>Welcome to CHS Mitra</h1>
-      <p>CHS Mitra is a smart society management platform designed to enhance community living through digital innovation. Whether you're a resident or an administrator, CHS Mitra empowers you with tools for secure communication, complaint resolution, visitor tracking, and multi-society management — all in one streamlined interface.<br><br>
-      <strong>CHS Mitra — Making Communities Smarter, Safer & Seamless.</strong></p>
+      <h1>Welcome to CHSmitra</h1>
+      <p>CHSmitra is a smart society management platform designed to enhance community living through digital innovation. 
+        Whether you're a resident or an administrator, CHS Mitra empowers you with tools for secure communication, 
+        complaint resolution, visitor tracking, and multi-society management — all in one streamlined interface.<br><br>
+      <strong>CHSmitra — Making Communities Smarter, Safer & Seamless.</strong></p>
       <h2>Let's Get Started!</h2>
       <a href="login.php" class="btn">Login</a>
     </div>
@@ -252,8 +254,8 @@
         <p>Grant administrators the ability to manage society records, track issues, and communicate updates with ease.</p>
       </div>
       <div class="feature" data-aos="fade-up" data-aos-delay="400">
-        <h3>📊 Transparent Communication</h3>
-        <p>Keep residents informed through real-time updates, issue tracking, and centralized communication systems.</p>
+        <h3>📊 Contact Us</h3>
+        <p>For registering your society Contact the Admin <strong>EMAIL: achsmitra@gmail.com</strong> mail your details through this email.</p>
       </div>
     </div>
   </section>

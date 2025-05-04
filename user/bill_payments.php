@@ -1,8 +1,13 @@
 <?php
 session_start();
+
+//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
+  //  header("Location: login.php");
+    //exit();
+//}
 include '../db.php';
 
-$user_id = $_SESSION['user_id']; // Assuming login system stores this
+
 
 // Get apartment ID of the user (owner or tenant)
 $sql = "SELECT a.apartment_id, a.society_id

@@ -1,8 +1,10 @@
 <?php
-// Database Connection
+session_start();
+//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
+  //  header("Location: login.php");
+  //  exit();
+//}
 include '../db.php';
-
-// Handle Form Submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $society_id = $_POST['society_id'];
     $due_date = $_POST['due_date'];

@@ -1,11 +1,11 @@
 <?php
 session_start();
-include '../db.php';
 
-// Ensure the user is Security
-//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Security') {
-  //  die("Error: Unauthorized access.");
+//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Security Guard') {
+  //  header("Location: login.php");
+    //exit();
 //}
+include '../db.php';
 
 // Fetch visitors pending security approval
 $sql = "SELECT * FROM Visitors WHERE security_approved = 0 ORDER BY check_in DESC";

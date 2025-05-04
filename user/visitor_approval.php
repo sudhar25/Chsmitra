@@ -1,9 +1,11 @@
 <?php
 session_start();
-include '../db.php'; // Include DB connection
 
-$user_id = $_SESSION['user_id']; // Logged-in user
-$society_id = $_SESSION['society_id']; // User's society
+//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
+  //  header("Location: login.php");
+    //exit();
+//}
+include '../db.php';
 
 // Handle new visitor request submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_request'])) {

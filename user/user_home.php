@@ -1,10 +1,11 @@
 <?php
-//session_start();
-//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
-  //  header("Location: login.php");
-  //  exit();
+session_start();
+
+//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
+  ////  header("Location: login.php");
+    //exit();
 //}
-//?>
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +38,7 @@
                     <a class="nav-link" href="about_us.php">About Us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="contact_us.php">Contact Us</a>
+                    <a class="nav-link" href="../home.php">Home</a>
                 </li>
             </ul>
         </div>
