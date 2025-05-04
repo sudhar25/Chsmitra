@@ -66,7 +66,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         function printForm() {
+            const printContent = document.getElementById('printArea').innerHTML;
+            const original = document.body.innerHTML;
+            document.body.innerHTML = printContent;
             window.print();
+            document.body.innerHTML = original;
         }
 
         function toggleMenu() {
@@ -87,6 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
         <div class="hamburger ml-3" onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem;">☰</div>
     </div>
+    
     <div class="d-flex">
         <a href="../logout.php" class="nav-link"
            style="color: #003366; transition: 0.3s;"
@@ -101,6 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
            onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
            onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Home</a>
     </div>
+    
 </nav>
 
 <!-- Layout: Sidebar + Main Content -->
@@ -147,9 +153,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <!-- Main Content -->
     <div class="flex-grow-1 p-4">
-        <h1><b>CHSMITHRA</b></h1>
-        <h2>Bill Generator</h2>
+    <h2>Bill Generator</h2>
+        <div id="printArea">
         <form method="POST">
+            <h1><strong>Maintanance Bill</strong></h1>
+            <h2>CHSmitra</h2>
             <div class="form-group">
                 <label for="society_id">Society ID:</label>
                 <input type="number" class="form-control" id="society_id" name="society_id" required>
@@ -180,11 +188,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="date" class="form-control" name="due_date" required>
             </div>
 
-            <p id="info-text">[Add your paragraph here later]</p>
-
+            <p id="info-text">Please ensure that the total bill amount is paid on or before the due date mentioned above.<br> 
+                <br>A fine of ₹100 will be added for every week of delay after the due date.<br> 
+                <br>Payments can be made online or at the society office during working hours.<br>
+                <br>Residents are requested to retain the payment receipt for future reference.<br> 
+                <br>Disputes related to bill amounts must be reported within 7 days.<br>
+                <br>For any queries, please contact the society office. <br>
+                <br>Timely payments help maintain cleanliness, security, and other essential services in the society.<br></p>
+            <p>This is a computer generated bill and does not require a signature.</p>
             <button type="submit" class="btn btn-primary">Generate Bill</button>
             <button type="button" class="btn btn-secondary" onclick="printForm()">Print</button>
         </form>
+    </div>
     </div>
 </div>
 

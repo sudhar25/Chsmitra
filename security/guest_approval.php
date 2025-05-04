@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['approve_visitor'])) {
     <meta charset="UTF-8">
     <title>Guest Approval - Security</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <script>
         function toggleMenu() {
             const menu = document.getElementById('menu');
@@ -50,32 +51,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['approve_visitor'])) {
         <div class="hamburger ml-3" onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem; color: #003366;">☰</div>
     </div>
     <div class="d-flex">
-        <a href="security_home.php" class="nav-link text-dark" style="font-size: 1rem; transition: 0.3s;">Home</a>
-        <a href="../logout.php" class="nav-link text-dark" style="font-size: 1rem; transition: 0.3s;">Logout</a>
+    <a href="../logout.php" class="nav-link"
+           style="color: #003366; transition: 0.3s;"
+           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
+           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Logout</a>
+        <a href="security_home.php" class="nav-link"
+           style="color: #003366; transition: 0.3s;"
+           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
+           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Security</a>
+        <a href="../home.php" class="nav-link"
+           style="color: #003366; transition: 0.3s;"
+           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
+           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Home</a>
     </div>
 </nav>
 
 <!-- Layout: Sidebar + Main Content -->
 <div class="d-flex" style="min-height: 100vh;">
     <!-- Sidebar Menu -->
-    <div id="menu" class="d-flex flex-column text-white p-3" style="min-width: 200px; background-color: #336699; height: 100%; display: none;">
-        <a href="manage_complaint.php" class="text-white py-1" style="color: lightblue; text-decoration: none; padding: 8px; transition: 0.3s;">
-            Manage Complaints
-        </a>
-        <a href="security_report.php" class="text-white py-1" style="color: lightblue; text-decoration: none; padding: 8px; transition: 0.3s;">
-            View Reports
-        </a>
-        <a href="visitor_approval.php" class="text-white py-1" style="color: lightblue; text-decoration: none; padding: 8px; transition: 0.3s;">
-            Visitor Approval
-        </a>
-        <a href="security_settings.php" class="text-white py-1" style="color: lightblue; text-decoration: none; padding: 8px; transition: 0.3s;">
-            Security Settings
-        </a>
+    <div id="menu" class="d-flex flex-column text-white p-3"
+         style="min-width: 200px; background-color: #336699; height: 100%;">
+        <a href="complaint_management.php" class="text-white py-1"
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Complaint Management</a>
+
+        <a href="guest_approval.php" class="text-white py-1" 
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Visitor Approval</a>
+
+        <a href="notification_system.php" class="text-white py-1" 
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Send Notification</a>
+
+        
     </div>
 
     <!-- Main Content -->
     <div class="flex-grow-1 p-4">
-        <h3 class="mb-3">Security Approval for Visitors</h3>
+        <h2 class="mb-3">Security Approval for Visitors</h2>
         <?php if (isset($message)) echo "<div class='alert alert-success'>$message</div>"; ?>
 
         <table class="table table-bordered table-striped">

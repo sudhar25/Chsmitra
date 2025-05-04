@@ -39,7 +39,7 @@ session_start();
                     <a class="nav-link" href="about_us.php">About Us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="contact_us.php">Contact Us</a>
+                    <a class="nav-link" href="../home.php">Home</a>
                 </li>
             </ul>
         </div>
