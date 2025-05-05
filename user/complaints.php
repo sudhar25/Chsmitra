@@ -1,108 +1,90 @@
 <?php
-// Start session (to track logged-in user)
-session_start();
+$host = 'localhost';
+$user = 'root';
+$password = '';
+$database = 'SocietyManagement';
 
-//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
-  //  header("Location: login.php");
-    //exit();
-//}
-include '../db.php';
+$conn = new mysqli($host, $user, $password, $database);
 
-
-// Handle Complaint Submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_complaint'])) {
-    // Validate Inputs
-    if (empty($_POST['complaint_text']) || empty($_POST['apartment_id'])) {
-        die("Error: Complaint and Apartment ID cannot be empty.");
-    }
-
-    // Sanitize inputs
-    $complaint_text = $conn->real_escape_string($_POST['complaint_text']);
-    $apartment_id = $conn->real_escape_string($_POST['apartment_id']);
-
-    // File Upload Handling
-    $image_path = null;
-    if (!empty($_FILES['complaint_image']['name'])) {
-        $target_dir = "../uploads/";
-        
-        // Create directory if it doesn't exist
-        if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0777, true);
-        }
-
-        // Generate unique file name
-        $image_path = time() . "_" . basename($_FILES["complaint_image"]["name"]);
-        $target_file = $target_dir . $image_path;
-        move_uploaded_file($_FILES["complaint_image"]["tmp_name"], $target_file);
-    }
-
-    // Insert complaint into DB
-    $stmt = $conn->prepare("INSERT INTO Complaints (user_id, society_id, apartment_id, complaint_text, image_path, status) VALUES (?, ?, ?, ?, ?, 'Open')");
-    $stmt->bind_param("iisss", $user_id, $society_id, $apartment_id, $complaint_text, $image_path);
-    
-    if ($stmt->execute()) {
-        $message = "Complaint submitted successfully!";
-    } else {
-        $message = "Error: " . $stmt->error;
-    }
-    $stmt->close();
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch User's Complaints
-$sql = "SELECT complaint_id, complaint_text, status, image_path, created_at FROM Complaints WHERE user_id = ?";
+// Fetch complaints with user and apartment details
+$sql = "SELECT 
+            c.complaint_id, 
+            c.complaint_text, 
+            c.status, 
+            c.created_at,
+            c.image_path,
+            u.name AS user_name,
+            a.apartment_number
+        FROM Complaints c
+        JOIN Users u ON c.user_id = u.user_id
+        JOIN Apartments a ON c.apartment_id = a.apartment_id
+        ORDER BY c.created_at DESC";
+
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
 $stmt->execute();
-$complaints = $stmt->get_result();
+$result = $stmt->get_result();
+
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Complaints</title>
+    <title>Complaints</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+        }
+    </style>
 </head>
 <body>
+    <h2>Complaint List</h2>
 
-<h2>Submit a Complaint</h2>
-<?php if (isset($message)) echo "<p><strong>$message</strong></p>"; ?>
-
-<form method="POST" enctype="multipart/form-data">
-    <label>Apartment ID:</label>
-    <input type="text" name="apartment_id" required><br>
-
-    <label>Complaint:</label>
-    <textarea name="complaint_text" required></textarea><br>
-
-    <label>Upload Image (Optional):</label>
-    <input type="file" name="complaint_image"><br>
-
-    <button type="submit" name="submit_complaint">Submit</button>
-</form>
-
-<h2>My Complaints</h2>
-<table border="1" cellpadding="10">
-    <tr>
-        <th>ID</th>
-        <th>Complaint</th>
-        <th>Image</th>
-        <th>Status</th>
-        <th>Submitted On</th>
-    </tr>
-
-    <?php while ($row = $complaints->fetch_assoc()) { ?>
-    <tr>
-        <td><?= $row['complaint_id']; ?></td>
-        <td><?= htmlspecialchars($row['complaint_text']); ?></td>
-        <td>
-            <?php if ($row['image_path']) { ?>
-                <img src="../uploads/<?= htmlspecialchars($row['image_path']); ?>" width="100" alt="Complaint Image">
-            <?php } else { echo "No Image"; } ?>
-        </td>
-        <td><strong><?= $row['status']; ?></strong></td>
-        <td><?= $row['created_at']; ?></td>
-    </tr>
-    <?php } ?>
-</table>
+    <?php if ($result->num_rows > 0): ?>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Apartment</th>
+                <th>Text</th>
+                <th>Status</th>
+                <th>Image</th>
+                <th>Created At</th>
+            </tr>
+            <?php while ($row = $result->fetch_assoc()): ?>
+                <tr>
+                    <td><?= htmlspecialchars($row['complaint_id']) ?></td>
+                    <td><?= htmlspecialchars($row['user_name']) ?></td>
+                    <td><?= htmlspecialchars($row['apartment_number']) ?></td>
+                    <td><?= nl2br(htmlspecialchars($row['complaint_text'])) ?></td>
+                    <td><?= htmlspecialchars($row['status']) ?></td>
+                    <td>
+                        <?php if ($row['image_path']): ?>
+                            <img src="<?= htmlspecialchars($row['image_path']) ?>" alt="Image" width="100">
+                        <?php else: ?>
+                            No image
+                        <?php endif; ?>
+                    </td>
+                    <td><?= htmlspecialchars($row['created_at']) ?></td>
+                </tr>
+            <?php endwhile; ?>
+        </table>
+    <?php else: ?>
+        <p>No complaints found.</p>
+    <?php endif; ?>
 
 </body>
 </html>
+
+<?php
+$stmt->close();
+$conn->close();
+?>

@@ -1,115 +1,152 @@
 <?php
 session_start();
+$host = 'localhost';
+$user = 'root';
+$password = '';
+$database = 'SocietyManagement';
 
-//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
-  //  header("Location: login.php");
-    //exit();
-//}
-include '../db.php';
-
-// Handle new visitor request submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_request'])) {
-    $visitor_name = mysqli_real_escape_string($conn, $_POST['visitor_name']);
-    $contact = mysqli_real_escape_string($conn, $_POST['contact']);
-    $purpose = mysqli_real_escape_string($conn, $_POST['purpose']);
-
-    $sql = "INSERT INTO Visitors (society_id, visitor_name, contact, purpose, security_approved, admin_approved, check_out) 
-            VALUES ('$society_id', '$visitor_name', '$contact', '$purpose', 0, 0, NULL)";
-    
-    if (mysqli_query($conn, $sql)) {
-        echo "<script>alert('Visitor request submitted successfully!'); window.location.href='visitor_requests.php';</script>";
-    } else {
-        echo "Error: " . mysqli_error($conn);
-    }
+$conn = new mysqli($host, $user, $password, $database);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle visitor check-out update
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_out'])) {
+// Get user_id from session (replace 1 with actual login system fallback if needed)
+$user_id = $_SESSION['user_id'] ?? 1;
+
+// Fetch society_id of logged-in user
+$stmt = $conn->prepare("SELECT society_id FROM Users WHERE user_id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$user_data = $result->fetch_assoc();
+$society_id = $user_data['society_id'] ?? null;
+
+// Approve logic
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['visitor_id'])) {
     $visitor_id = $_POST['visitor_id'];
-    $check_out_time = date("Y-m-d H:i:s");
 
-    $sql = "UPDATE Visitors SET check_out = '$check_out_time' WHERE visitor_id = '$visitor_id' AND check_out IS NULL";
-    
-    if (mysqli_query($conn, $sql)) {
-        echo "<script>alert('Visitor checked out successfully!'); window.location.href='visitor_requests.php';</script>";
-    } else {
-        echo "Error: " . mysqli_error($conn);
+    if (isset($_POST['approve_security'])) {
+        $update = $conn->prepare("UPDATE Visitors SET security_approved = 1, approved_by = ? WHERE visitor_id = ?");
+        $update->bind_param("ii", $user_id, $visitor_id);
+        $update->execute();
+        $update->close();
+    }
+
+    if (isset($_POST['approve_admin'])) {
+        $update = $conn->prepare("UPDATE Visitors SET admin_approved = 1, approved_by = ? WHERE visitor_id = ?");
+        $update->bind_param("ii", $user_id, $visitor_id);
+        $update->execute();
+        $update->close();
     }
 }
 
-// Fetch visitor requests made by the logged-in user
-$visitor_requests = mysqli_query($conn, "SELECT * FROM Visitors WHERE society_id='$society_id'");
+// Fetch pending visitor approvals
+$visitors = [];
+if ($society_id) {
+    $stmt = $conn->prepare("SELECT * FROM Visitors WHERE society_id = ? AND (security_approved = 0 OR admin_approved = 0)");
+    $stmt->bind_param("i", $society_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $visitors[] = $row;
+    }
+    $stmt->close();
+}
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visitor Request</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Visitor Approval</title>
+    <link rel="stylesheet" href="style.css"> <!-- Optional external style -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f2f7ff;
+        }
+        #menu a {
+            color: lightblue;
+            text-decoration: none;
+        }
+        #menu a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <div class="max-w-2xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold mb-4 text-blue-600">Visitor Request Form</h2>
-        <form action="" method="POST" class="space-y-4">
-            <div>
-                <label class="block text-gray-700 font-semibold">Visitor Name</label>
-                <input type="text" name="visitor_name" required class="w-full p-2 border rounded">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold">Contact</label>
-                <input type="text" name="contact" required class="w-full p-2 border rounded">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold">Purpose</label>
-                <textarea name="purpose" required class="w-full p-2 border rounded"></textarea>
-            </div>
-            <button type="submit" name="submit_request" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
-                Submit Request
-            </button>
-        </form>
+<body>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Navbar -->
+<nav class="d-flex justify-content-between align-items-center px-3 py-2" style="background-color: lightblue;">
+    <div class="d-flex align-items-center">
+        <img src="../Images/logo.png" alt="Logo" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
+        <div class="hamburger ml-3" onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem;">☰</div>
+    </div>
+    <div class="d-flex">
+        <a href="../logout.php" class="nav-link" style="color: #003366;">Logout</a>
+        <a href="user_dashboard.php" class="nav-link" style="color: #003366;">Dashboard</a>
+        <a href="../home.php" class="nav-link" style="color: #003366;">Home</a>
+    </div>
+</nav>
+
+<!-- Layout -->
+<div class="layout d-flex" style="min-height: 100vh;">
+    <!-- Sidebar -->
+    <div id="menu" class="d-flex flex-column text-white p-3" style="min-width: 200px; background-color: #336699;">
+        <a href="my_bill.php" class="py-1">My Bill</a>
+        <a href="submit_complaint.php" class="py-1">Submit Complaint</a>
+        <a href="view_notifications.php" class="py-1">Notifications</a>
+        <a href="edit_profile.php" class="py-1">Edit Profile</a>
     </div>
 
-    <!-- Visitor Request Status Table -->
-    <div class="max-w-3xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold mb-4 text-green-600">Your Visitor Requests</h2>
-        <table class="w-full border-collapse border border-gray-300">
-            <tr class="bg-gray-200">
-                <th class="border p-2">Visitor Name</th>
-                <th class="border p-2">Contact</th>
-                <th class="border p-2">Purpose</th>
-                <th class="border p-2">Status</th>
-                <th class="border p-2">Check-Out</th>
-            </tr>
-            <?php while ($row = mysqli_fetch_assoc($visitor_requests)) { 
-                // Determine the status
-                if ($row['admin_approved'] == 1) {
-                    $status = "<span class='text-green-500 font-semibold'>Approved</span>";
-                } elseif ($row['security_approved'] == 1) {
-                    $status = "<span class='text-yellow-500 font-semibold'>Pending Admin Approval</span>";
-                } else {
-                    $status = "<span class='text-red-500 font-semibold'>Pending Security Approval</span>";
-                }
-            ?>
-                <tr class="text-center">
-                    <td class="border p-2"><?php echo htmlspecialchars($row['visitor_name']); ?></td>
-                    <td class="border p-2"><?php echo htmlspecialchars($row['contact']); ?></td>
-                    <td class="border p-2"><?php echo htmlspecialchars($row['purpose']); ?></td>
-                    <td class="border p-2"><?php echo $status; ?></td>
-                    <td class="border p-2">
-                        <?php if ($row['check_out'] == NULL && $row['admin_approved'] == 1) { ?>
-                            <form method="POST">
-                                <input type="hidden" name="visitor_id" value="<?php echo $row['visitor_id']; ?>">
-                                <button type="submit" name="check_out" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700">Check Out</button>
-                            </form>
-                        <?php } else {
-                            echo $row['check_out'] ? $row['check_out'] : "-";
-                        } ?>
-                    </td>
-                </tr>
-            <?php } ?>
-        </table>
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+        <h2 class="mb-4">Pending Visitor Approvals</h2>
+
+        <?php if (count($visitors) > 0): ?>
+            <?php foreach ($visitors as $visitor): ?>
+                <div class="border rounded p-3 mb-3 bg-white shadow-sm">
+                    <p><strong>Name:</strong> <?= htmlspecialchars($visitor['visitor_name']) ?></p>
+                    <p><strong>Contact:</strong> <?= htmlspecialchars($visitor['contact']) ?></p>
+                    <p><strong>Purpose:</strong> <?= htmlspecialchars($visitor['purpose']) ?></p>
+                    <p><strong>Check-In:</strong> <?= htmlspecialchars($visitor['check_in']) ?></p>
+                    <form method="POST" class="mt-2">
+                        <input type="hidden" name="visitor_id" value="<?= $visitor['visitor_id'] ?>">
+                        <?php if (!$visitor['security_approved']): ?>
+                            <button type="submit" name="approve_security" class="btn btn-warning mr-2">Approve as Security</button>
+                        <?php endif; ?>
+                        <?php if (!$visitor['admin_approved']): ?>
+                            <button type="submit" name="approve_admin" class="btn btn-success">Approve as Admin</button>
+                        <?php endif; ?>
+                    </form>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="alert alert-info">No pending visitor approvals.</div>
+        <?php endif; ?>
     </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-center" style="background-color: #ADD8E6; padding: 10px; font-size: 0.85rem;">
+    <p style="margin: 0;">© 2025 CHSMITRA. All rights reserved.</p>
+</footer>
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('menu');
+        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+</script>
+
 </body>
 </html>
