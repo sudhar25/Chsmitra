@@ -85,6 +85,16 @@ session_start();
                 </div>
             </div>
         </div>
+
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card">
+                <img src="../Images/Notification.png" class="card-img-top" alt="view details">
+                <div class="card-body">
+                    <p class="card-text"><strong>View Details of Society</strong></p>
+                    <a href="view_details.php" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -92,6 +102,7 @@ session_start();
 <footer class="text-center" style="background-color: #ADD8E6; padding: 10px; margin-top: 20px; font-size: 0.85rem;">
     <p style="margin: 0;">© 2025 CHSMITRA. All rights reserved.</p>
 </footer>
+
 
 </body>
 </html>

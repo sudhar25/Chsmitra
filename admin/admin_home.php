@@ -134,8 +134,8 @@
             <div class="card">
                 <img src="image8_placeholder.png" class="card-img-top" alt="Image 8">
                 <div class="card-body">
-                    <p class="card-text">Coming Soon</p>
-                    <a href="#" class="btn btn-primary">Go</a>
+                    <p class="card-text"><strong>Register society</strong></p>
+                    <a href="register_society.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>
@@ -145,8 +145,8 @@
             <div class="card">
                 <img src="image9_placeholder.png" class="card-img-top" alt="Image 9">
                 <div class="card-body">
-                    <p class="card-text">Coming Soon</p>
-                    <a href="#" class="btn btn-primary">Go</a>
+                    <p class="card-text"><strong>View Details of Society</strong></p>
+                    <a href="view_details.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>

@@ -6,82 +6,81 @@ session_start();
 //}
 include '../db.php';
 
-// Handle status update
-if (isset($_POST['update_status'])) {
-    $maintenance_id = $_POST['maintenance_id'];
-    $update_sql = "UPDATE Maintenance SET status='Paid' WHERE maintenance_id=$maintenance_id";
-    $conn->query($update_sql);
-    echo "<script>alert('Status updated to Paid'); window.location.href=window.location.href;</script>";
-}
+$societyDetails = null;
+$admins = $members = $guards = [];
 
-// Fetch all bills with society, apartment, and user info
-$sql = "SELECT s.name AS society_name, s.society_id, a.apartment_number, u.name AS owner_name,
-               m.maintenance_id, m.amount, m.due_date, m.status
-        FROM Maintenance m
-        JOIN Apartments a ON m.apartment_id = a.apartment_id
-        JOIN Societies s ON m.society_id = s.society_id
-        JOIN Users u ON a.owner_id = u.user_id
-        ORDER BY s.name, a.apartment_number";
-$result = $conn->query($sql);
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $society_name = trim($_POST['society_name']);
 
-// Organize data by society
-$societies = [];
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        $societies[$row['society_name']][] = $row;
+    // Fetch Society Info
+    $societySql = "SELECT * FROM Societies WHERE name = ?";
+    $stmt = $conn->prepare($societySql);
+    $stmt->bind_param("s", $society_name);
+    $stmt->execute();
+    $societyResult = $stmt->get_result();
+
+    if ($societyResult->num_rows > 0) {
+        $societyDetails = $societyResult->fetch_assoc();
+        $society_id = $societyDetails['society_id'];
+
+        // Fetch Admins
+        $stmt = $conn->prepare("SELECT * FROM Users WHERE society_id = ? AND role = 'Admin'");
+        $stmt->bind_param("i", $society_id);
+        $stmt->execute();
+        $admins = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        // Fetch Members
+        $stmt = $conn->prepare("SELECT * FROM Users WHERE society_id = ? AND role = 'Member'");
+        $stmt->bind_param("i", $society_id);
+        $stmt->execute();
+        $members = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        // Fetch Security Guards
+        $stmt = $conn->prepare("SELECT * FROM Users WHERE society_id = ? AND role = 'Security Guard'");
+        $stmt->bind_param("i", $society_id);
+        $stmt->execute();
+        $guards = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    } else {
+        $error = "No society found with that name.";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Bills by Society</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="style.css">
+    <title>View Society Info</title>
     <script>
         function toggleMenu() {
-            const menu = document.getElementById('menu');
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+            const menu = document.getElementById('sidebar');
+            menu.classList.toggle('d-none');
         }
     </script>
 </head>
 <body>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+<!-- Navbar -->
 <nav class="d-flex justify-content-between align-items-center px-3 py-2" style="background-color: lightblue;">
     <div class="d-flex align-items-center">
-    <img src="../Images/logo.png" alt="Logo" 
-    style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
+        <img src="../Images/logo.png" alt="Logo" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
         <div class="hamburger ml-3" onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem;">☰</div>
     </div>
     <div class="d-flex">
-        <a href="../logout.php" class="nav-link"
-           style="color: #003366; transition: 0.3s;"
-           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
-           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Logout</a>
-        <a href="admin_home.php" class="nav-link"
-           style="color: #003366; transition: 0.3s;"
-           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
-           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Admin</a>
-        <a href="../home.php" class="nav-link"
-           style="color: #003366; transition: 0.3s;"
-           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
-           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Home</a>
+        <a href="../logout.php" class="nav-link" style="color: #003366; transition: 0.3s;" onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'" onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Logout</a>
+        <a href="admin_home.php" class="nav-link" style="color: #003366; transition: 0.3s;" onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'" onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Admin</a>
+        <a href="../home.php" class="nav-link" style="color: #003366; transition: 0.3s;" onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'" onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Home</a>
     </div>
 </nav>
 
 <!-- Layout: Sidebar + Main Content -->
 <div class="layout d-flex" style="min-height: 100vh;">
     <!-- Sidebar Menu -->
-    <div id="menu" class="d-flex flex-column text-white p-3"
-         style="min-width: 200px; background-color: #336699; height: 100%;">
-        <a href="maintanance_bill.php" class="text-white py-1"
+    <div id="sidebar" class="d-flex flex-column text-white p-3" style="min-width: 200px; background-color: #336699; height: 100%;">
+    <a href="maintanance_bill.php" class="text-white py-1"
            style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
            onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
            onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Maintenance Bill</a>
@@ -115,7 +114,7 @@ if ($result->num_rows > 0) {
            style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
            onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
            onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Visitor Approval</a>
-
+        
            <a href="register_society.php" class="text-white py-1"
            style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
            onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
@@ -128,50 +127,64 @@ if ($result->num_rows > 0) {
     </div>
 
     <!-- Main Content -->
-    <div class="flex-grow-1 p-4">
-        <h1 class="text-center mb-4">Admin Dashboard - Bill Payment Status by Society</h1>
+    <div class="col-md-9 p-4">
+        <h2 class="mb-4">View Society Details</h2>
+        <form method="post" class="form-inline mb-4">
+            <label for="society_name" class="mr-2">Society Name:</label>
+            <input type="text" name="society_name" id="society_name" class="form-control mr-2" required>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
 
-        <?php if (!empty($societies)): ?>
-            <?php foreach($societies as $society_name => $bills): ?>
-                <h2 class="mt-4"><?= htmlspecialchars($society_name) ?></h2>
-                <table class="table table-bordered">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Apartment</th>
-                            <th>Owner</th>
-                            <th>Bill ID</th>
-                            <th>Amount (₹)</th>
-                            <th>Due Date</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($bills as $bill): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($bill['apartment_number']) ?></td>
-                                <td><?= htmlspecialchars($bill['owner_name']) ?></td>
-                                <td><?= $bill['maintenance_id'] ?></td>
-                                <td><?= $bill['amount'] ?></td>
-                                <td><?= $bill['due_date'] ?></td>
-                                <td class="<?= strtolower($bill['status']) ?>"><?= $bill['status'] ?></td>
-                                <td>
-                                    <?php if ($bill['status'] == 'Pending'): ?>
-                                        <form method="POST">
-                                            <input type="hidden" name="maintenance_id" value="<?= $bill['maintenance_id'] ?>">
-                                            <button type="submit" name="update_status" class="btn btn-success btn-sm">Mark as Paid</button>
-                                        </form>
-                                    <?php else: ?>
-                                        <span class="badge badge-success">Paid</span>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p>No bills found.</p>
+        <?php if (isset($error)): ?>
+            <div class="alert alert-danger"><?= $error ?></div>
+        <?php elseif ($societyDetails): ?>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title"><?= htmlspecialchars($societyDetails['name']) ?></h4>
+                    <p><strong>Address:</strong> <?= htmlspecialchars($societyDetails['address']) ?></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Admin(s)</h5>
+                    <?php if (count($admins) > 0): ?>
+                        <ul class="list-group">
+                            <?php foreach ($admins as $admin): ?>
+                                <li class="list-group-item"><?= $admin['name'] ?> (<?= $admin['email'] ?>)</li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p>No Admins found.</p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="col-md-4">
+                    <h5>Members</h5>
+                    <?php if (count($members) > 0): ?>
+                        <ul class="list-group">
+                            <?php foreach ($members as $member): ?>
+                                <li class="list-group-item"><?= $member['name'] ?> (<?= $member['email'] ?>)</li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p>No Members found.</p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="col-md-4">
+                    <h5>Security Guard(s)</h5>
+                    <?php if (count($guards) > 0): ?>
+                        <ul class="list-group">
+                            <?php foreach ($guards as $guard): ?>
+                                <li class="list-group-item"><?= $guard['name'] ?> (<?= $guard['email'] ?>)</li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p>No Guards found.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
 </div>
@@ -181,5 +194,9 @@ if ($result->num_rows > 0) {
     <p style="margin: 0;">© 2025 CHSMITRA. All rights reserved.</p>
 </footer>
 
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

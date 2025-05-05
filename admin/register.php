@@ -7,23 +7,62 @@ session_start();
 include '../db.php';
 
 if (isset($_POST['register'])) {
-    $society_id = $_POST['society_id'];
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $role = $_POST['role'];
-    $phone = $_POST['phone'];
+  $society_id = $_POST['society_id'];
+  $apartment_number = $_POST['apartment_number']; // Get from form
+  $status = $_POST['status']; // 'Owner' or 'Tenant'
 
-    $sql = "INSERT INTO Users (society_id, name, email, password_hash, role, phone)
-            VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isssss", $society_id, $name, $email, $password, $role, $phone);
+  // First, get the apartment_id from apartment_number and society_id
+  $stmt = $conn->prepare("SELECT apartment_id, owner_id, tenant_id FROM Apartments WHERE society_id = ? AND apartment_number = ?");
+  $stmt->bind_param("is", $society_id, $apartment_number);
+  $stmt->execute();
+  $result = $stmt->get_result();
 
-    if ($stmt->execute()) {
-        echo "Registration successful!";
-    } else {
-        echo "Error: " . $stmt->error;
-    }
+  if ($result->num_rows === 0) {
+      echo "Apartment not found in this society.";
+      exit;
+  }
+
+  $row = $result->fetch_assoc();
+  $apartment_id = $row['apartment_id'];
+
+  // Ownership check
+  if ($status === 'Owner' && !is_null($row['owner_id'])) {
+      echo "This apartment already has an owner!";
+      exit;
+  }
+
+  if ($status === 'Tenant' && !is_null($row['tenant_id'])) {
+      echo "This apartment already has a tenant!";
+      exit;
+  }
+
+  // Proceed with inserting user and updating Apartments
+  $name = $_POST['name'];
+  $email = $_POST['email'];
+  $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+  $role = $_POST['role'];
+  $phone = $_POST['phone'];
+
+  $sql = "INSERT INTO Users (society_id, name, email, password_hash, role, phone) VALUES (?, ?, ?, ?, ?, ?)";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("isssss", $society_id, $name, $email, $password, $role, $phone);
+
+  if ($stmt->execute()) {
+      $user_id = $stmt->insert_id;
+
+      if ($status === 'Owner') {
+          $update = $conn->prepare("UPDATE Apartments SET owner_id = ? WHERE apartment_id = ?");
+      } else {
+          $update = $conn->prepare("UPDATE Apartments SET tenant_id = ? WHERE apartment_id = ?");
+      }
+
+      $update->bind_param("ii", $user_id, $apartment_id);
+      $update->execute();
+
+      echo "Registration successful!";
+  } else {
+      echo "Error: " . $stmt->error;
+  }
 }
 ?>
 
@@ -100,13 +139,23 @@ if (isset($_POST['register'])) {
         <a href="register.php" class="text-white py-1" 
            style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
            onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
-           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Register</a>
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Register User</a>
 
         <a href="visitor_approval.php" class="text-white py-1"
            style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
            onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
            onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Visitor Approval</a>
-    </div>
+        
+           <a href="register_society.php" class="text-white py-1"
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Register Society</a> 
+           
+           <a href="view_details.php" class="text-white py-1"
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">View Details</a>   
+      </div>
 
 
       <!-- Main Content -->
@@ -137,6 +186,15 @@ if (isset($_POST['register'])) {
               <option value="Security Guard">Security Guard</option>
             </select>
           </div>
+          <div class="form-group">
+  <label>Ownership Status:</label>
+  <select name="status" class="form-control" required>
+    <option value="" disabled selected>Owner</option>
+    <option value="Owner">Owner</option>
+    <option value="Tenant">Tenant</option>
+  </select>
+</div>
+
           <div class="form-group">
             <label>Phone:</label>
             <input type="text" name="phone" class="form-control">
