@@ -75,7 +75,7 @@ if (isset($_POST['register_society'])) {
 <div class="layout d-flex" style="min-height: 100vh;">
     <!-- Sidebar -->
     <div id="menu" class="d-flex flex-column text-white p-3"
-         style="min-width: 200px; background-color: #336699; height: 100%;">
+         style="min-width: 200px; background-color: #336699;">
          <a href="maintanance_bill.php" class="text-white py-1"
            style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
            onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
