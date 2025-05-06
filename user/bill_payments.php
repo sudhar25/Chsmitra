@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 
 //if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
   //  header("Location: login.php");
@@ -11,8 +11,8 @@ session_start();
 
 // Get apartment ID of the user (owner or tenant)
 //$sql = "SELECT a.apartment_id, a.society_id
-        //FROM Apartments a
-        //WHERE a.owner_id = ? OR a.tenant_id = ?";
+  //      FROM Apartments a
+    //    WHERE a.owner_id = ? OR a.tenant_id = ?";
 //$stmt = $conn->prepare($sql);
 //$stmt->bind_param("ii", $user_id, $user_id);
 //$stmt->execute();
@@ -20,7 +20,7 @@ session_start();
 //$apartment = $result->fetch_assoc();
 
 //if (!$apartment) {
-    //echo "No apartment found for the user.";
+  //  echo "No apartment found for the user.";
     //exit;
 //}
 
@@ -29,22 +29,22 @@ session_start();
 
 // Get latest unpaid bill
 //$bill_sql = "SELECT * FROM Maintenance 
-             //WHERE apartment_id = ? AND status = 'Pending'
-             //ORDER BY due_date DESC LIMIT 1";
+  //           WHERE apartment_id = ? AND status = 'Pending'
+    //         ORDER BY due_date DESC LIMIT 1";
 //$bill_stmt = $conn->prepare($bill_sql);
 //$bill_stmt->bind_param("i", $apartment_id);
 //$bill_stmt->execute();
 //$bill_result = $bill_stmt->get_result();
 //$bill = $bill_result->fetch_assoc();
-//?>
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>My Bill</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="stylesheet" href="style.css">
 
     <script>
         function toggleMenu() {
@@ -93,9 +93,18 @@ session_start();
         <div class="hamburger ml-3" onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem;">☰</div>
     </div>
     <div class="d-flex">
-        <a href="../logout.php" class="nav-link" style="color: #003366;">Logout</a>
-        <a href="user_dashboard.php" class="nav-link" style="color: #003366;">Dashboard</a>
-        <a href="../home.php" class="nav-link" style="color: #003366;">Home</a>
+    <a href="../logout.php" class="nav-link"
+           style="color: #003366; transition: 0.3s;"
+           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
+           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Logout</a>
+        <a href="user_home.php" class="nav-link"
+           style="color: #003366; transition: 0.3s;"
+           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
+           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Member</a>
+        <a href="../home.php" class="nav-link"
+           style="color: #003366; transition: 0.3s;"
+           onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
+           onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Home</a>
     </div>
 </nav>
 
@@ -103,10 +112,30 @@ session_start();
 <div class="layout d-flex" style="min-height: 100vh;">
     <!-- Sidebar -->
     <div id="menu" class="d-flex flex-column text-white p-3" style="min-width: 200px; background-color: #336699;">
-        <a href="my_bill.php" class="text-white py-1" style="color: lightblue; text-decoration: none;">My Bill</a>
-        <a href="submit_complaint.php" class="text-white py-1" style="color: lightblue; text-decoration: none;">Submit Complaint</a>
-        <a href="view_notifications.php" class="text-white py-1" style="color: lightblue; text-decoration: none;">Notifications</a>
-        <a href="edit_profile.php" class="text-white py-1" style="color: lightblue; text-decoration: none;">Edit Profile</a>
+    <a href="bill_payments.php" class="text-white py-1"
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Pay Bill</a>
+
+        <a href="visitor_approval.php" class="text-white py-1" 
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Visitor Approval Request</a>
+
+        <a href="complaints.php" class="text-white py-1" 
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Complaint</a>
+
+        <a href="user_profile.php" class="text-white py-1" 
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">View Profile</a>
+        
+        <a href="visitor_status.php" class="text-white py-1"
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s; "
+           onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Visitor Status</a>
     </div>
 
     <!-- Main Content -->

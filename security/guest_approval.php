@@ -12,7 +12,7 @@ $sql = "SELECT * FROM Visitors WHERE security_approved = 0 ORDER BY check_in DES
 $result = $conn->query($sql);
 
 // Handle visitor approval by security
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['approve_visitor'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['approve_security'])) {
     $visitor_id = $_POST['visitor_id'];
 
     $stmt = $conn->prepare("UPDATE Visitors SET security_approved = 1 WHERE visitor_id = ?");

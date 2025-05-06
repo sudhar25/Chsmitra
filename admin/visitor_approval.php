@@ -7,7 +7,7 @@ session_start();
 include '../db.php';
 
 // Handle Admin Approval
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['approve_visitor'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['approve_admin'])) {
     $visitor_id = $_POST['visitor_id'];
 
     $query = "UPDATE Visitors SET admin_approved = 1 WHERE visitor_id = ?";

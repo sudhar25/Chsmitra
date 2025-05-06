@@ -132,7 +132,7 @@
         <!-- Extra Block 8 (optional) -->
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card">
-                <img src="image8_placeholder.png" class="card-img-top" alt="Image 8">
+                <img src="../Images/apt register.png" class="card-img-top" alt="Image 8">
                 <div class="card-body">
                     <p class="card-text"><strong>Register society</strong></p>
                     <a href="register_society.php" class="btn btn-primary">Go</a>
@@ -143,7 +143,7 @@
         <!-- Extra Block 9 (optional) -->
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="card">
-                <img src="image9_placeholder.png" class="card-img-top" alt="Image 9">
+                <img src="../Images/view data (1).png" class="card-img-top" alt="Image 9">
                 <div class="card-body">
                     <p class="card-text"><strong>View Details of Society</strong></p>
                     <a href="view_details.php" class="btn btn-primary">Go</a>

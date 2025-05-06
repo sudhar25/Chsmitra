@@ -10,7 +10,7 @@ session_start();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>User Dashboard</title>
+    <title>Member Home</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -47,7 +47,7 @@ session_start();
 
 <!-- Main content -->
 <div class="container mt-4">
-    <h1>Welcome, User!</h1>
+    <h1>Welcome, Member!</h1>
     <p>You have access to all society management features.</p>
 
     <!-- Grid blocks -->
@@ -55,10 +55,10 @@ session_start();
         <!-- Block 1 -->
         <div class="col-md-4 col-sm-6 mb-3">
             <div class="card">
-                <img src="../Images/Notification.png" class="card-img-top" alt="Notifications">
+                <img src="../Images/Maintenance payment.png" class="card-img-top" alt="pay bill">
                 <div class="card-body">
-                    <p class="card-text"><strong>Check your latest notifications</strong></p>
-                    <a href="view_notifications.php" class="btn btn-primary">Go</a>
+                    <p class="card-text"><strong>Pay Bill</strong></p>
+                    <a href="bill_payments.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@ session_start();
             <div class="card">
                 <img src="../Images/Manage Complaint.png" class="card-img-top" alt="Complaints">
                 <div class="card-body">
-                    <p class="card-text"><strong>Submit or view complaints</strong></p>
+                    <p class="card-text"><strong>Submit complaints</strong></p>
                     <a href="complaints.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
@@ -77,9 +77,9 @@ session_start();
         <!-- Block 3 -->
         <div class="col-md-4 col-sm-6 mb-3">
             <div class="card">
-                <img src="../Images/Maintenance payment.png" class="card-img-top" alt="Bill Payments">
+                <img src="../Images/visitor.png" class="card-img-top" alt="visitor request">
                 <div class="card-body">
-                    <p class="card-text"><strong>View and pay your bills</strong></p>
+                    <p class="card-text"><strong>Request for Visitor</strong></p>
                     <a href="bill_payments.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
@@ -90,8 +90,8 @@ session_start();
             <div class="card">
                 <img src="../Images/user profile.png" class="card-img-top" alt="Profile">
                 <div class="card-body">
-                    <p class="card-text"><strong>View or edit your profile</strong></p>
-                    <a href="profile.php" class="btn btn-primary">Go</a>
+                    <p class="card-text"><strong>View your profile</strong></p>
+                    <a href="user_profile.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>
@@ -101,22 +101,14 @@ session_start();
             <div class="card">
                 <img src="../Images/visitor.png" class="card-img-top" alt="Services">
                 <div class="card-body">
-                    <p class="card-text"><strong>Visitor Approval</strong></p>
-                    <a href="services.php" class="btn btn-primary">Go</a>
+                    <p class="card-text"><strong>View Visitor Request Status</strong></p>
+                    <a href="visitor_status.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>
 
-        <!-- Block 6 -->
-        <div class="col-md-4 col-sm-6 mb-3">
-            <div class="card">
-                <img src="image6_placeholder.png" class="card-img-top" alt="Coming Soon">
-                <div class="card-body">
-                    <p class="card-text"><strong>Coming Soon</strong></p>
-                    <a href="#" class="btn btn-primary">Go</a>
-                </div>
-            </div>
-        </div>
+        
+        
     </div>
 </div>
 
