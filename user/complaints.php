@@ -11,12 +11,12 @@ include '../db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_complaint'])) {
 
-    // Get input data
+    
     $complaint_text = mysqli_real_escape_string($conn, $_POST['complaint_text']);
     $apartment_id = $_POST['apartment_id'];
-    $user_id = $_SESSION['user_id']; // Assuming the user is logged in and their ID is known
+    $user_id = $_SESSION['user_id']; 
 
-    // Get society_id from the apartment
+    
     $stmt = $conn->prepare("SELECT society_id FROM Apartments WHERE apartment_id = ?");
     $stmt->bind_param("i", $apartment_id);
     $stmt->execute();
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_complaint'])) {
 <div class="layout d-flex" style="min-height: 100vh;">
     <!-- Sidebar -->
     <div id="menu" class="d-flex flex-column text-white p-3" style="min-width: 200px; background-color: #336699;">
-        <a href="bill_payments.php" class="text-white py-1"
+        <a href="temp_bill.php" class="text-white py-1"
            style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
            onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
            onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Pay Bill</a>

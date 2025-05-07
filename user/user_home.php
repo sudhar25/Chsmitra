@@ -58,7 +58,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
                 <img src="../Images/Maintenance payment.png" class="card-img-top" alt="pay bill">
                 <div class="card-body">
                     <p class="card-text"><strong>Pay Bill</strong></p>
-                    <a href="bill_payments.php" class="btn btn-primary">Go</a>
+                    <a href="temp_bill.php" class="btn btn-primary">Go</a>
                 </div>
             </div>
         </div>

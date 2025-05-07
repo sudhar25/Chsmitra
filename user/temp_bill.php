@@ -1,51 +1,88 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
-    header("Location: ../login.php");
-    exit();
+include '../db.php'; 
+
+if (!isset($_SESSION['user_id'])) {
+    die("User not logged in.");
 }
-include '../db.php';
 
 $user_id = $_SESSION['user_id'];
-$sql = "SELECT 
-            u.user_id,
-            u.society_id,
-            u.name,
-            u.email,
-            u.phone,
-            u.role,
-            u.created_at,
-            s.name AS society_name,
-            s.address AS society_address,
-            a.apartment_number,
-            o.name AS owner_name
-        FROM Users u
-        JOIN Societies s ON u.society_id = s.society_id
-        LEFT JOIN Apartments a ON (a.owner_id = u.user_id OR a.tenant_id = u.user_id)
-        LEFT JOIN Users o ON a.owner_id = o.user_id AND a.tenant_id = u.user_id
-        WHERE u.user_id = ?";
 
 
+$sql = "SELECT apartment_id FROM Apartments WHERE owner_id = ? OR tenant_id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
+$stmt->bind_param("ii", $user_id, $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
+$apartment = $result->fetch_assoc();
 
-if ($result->num_rows === 1) {
-    $user = $result->fetch_assoc();
+if (!$apartment) {
+    die("No apartment found for this user.");
+}
+
+$apartment_id = $apartment['apartment_id'];
+
+
+$bill_sql = "SELECT * FROM Maintenance WHERE apartment_id = ? ORDER BY due_date DESC LIMIT 1";
+$bill_stmt = $conn->prepare($bill_sql);
+$bill_stmt->bind_param("i", $apartment_id);
+$bill_stmt->execute();
+$bill_result = $bill_stmt->get_result();
+$bill = $bill_result->fetch_assoc();
+
+if (!$bill) {
+    die("No maintenance bill available.");
+}
+
+ 
+echo "------ Maintenance Bill ------\n";
+echo "Water Bill: ₹" . $bill['water_bill'] . "\n";
+echo "Electricity Bill: ₹" . $bill['electricity_bill'] . "\n";
+echo "Maintenance Charge: ₹" . $bill['maintenance_charge'] . "\n";
+echo "Total Amount: ₹" . ($bill['water_bill'] + $bill['electricity_bill'] + $bill['maintenance_charge']) . "\n";
+echo "Due Date: " . $bill['due_date'] . "\n";
+echo "Status: " . $bill['status'] . "\n";
+
+
+if ($bill['status'] === 'Paid') {
+    echo "This bill is already paid.\n";
+    exit;
+}
+
+echo "\nScan the QR code image available at: images/qr_code.png\n";
+
+echo "\nType 'yes' to mark this bill as paid: ";
+$handle = fopen("php://stdin", "r");
+$input = trim(fgets($handle));
+if (strtolower($input) === 'yes') {
+    $update_sql = "UPDATE Maintenance SET status = 'Paid' WHERE maintenance_id = ? AND apartment_id = ?";
+    $update_stmt = $conn->prepare($update_sql);
+    $update_stmt->bind_param("ii", $bill['maintenance_id'], $apartment_id);
+    if ($update_stmt->execute()) {
+        echo " Payment status updated to 'Paid'.\n";
+    } else {
+        echo " Failed to update payment status.\n";
+    }
 } else {
-    echo "User not found.";
-    exit();
+    echo "Payment not marked. Exiting.\n";
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>User Profile</title>
+    <title>Maintenance Bill</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .qr-code {
+            max-width: 200px;
+            margin-top: 20px;
+        }
+        .bill-info {
+            margin-top: 30px;
+        }
+    </style>
 </head>
 <body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -59,7 +96,7 @@ if ($result->num_rows === 1) {
         <div class="hamburger ml-3" onclick="toggleMenu()" style="cursor:pointer; font-size: 1.5rem;">☰</div>
     </div>
     <div class="d-flex">
-    <a href="../logout.php" class="nav-link"
+        <a href="../logout.php" class="nav-link"
            style="color: #003366; transition: 0.3s;"
            onmouseover="this.style.color='black'; this.style.transform='scale(1.1)'"
            onmouseout="this.style.color='#003366'; this.style.transform='scale(1)'">Logout</a>
@@ -99,36 +136,36 @@ if ($result->num_rows === 1) {
            onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">View Profile</a>
 
         <a href="visitor_status.php" class="text-white py-1"
-           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s; "
+           style="color: lightblue; text-decoration: none; border-radius: 5px; padding: 8px; transition: 0.3s;"
            onmouseover="this.style.backgroundColor='#003366'; this.style.color='white'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 8px rgba(0, 51, 102, 0.5)'"
            onmouseout="this.style.backgroundColor='transparent'; this.style.color='lightblue'; this.style.transform='scale(1)'; this.style.boxShadow='none'">Visitor Status</a>
     </div>
 
-    <!-- Main Content: User Profile -->
+    <!-- Main Content -->
     <div class="flex-grow-1 p-4">
-        <h2>User Profile</h2>
-        <?php if (!empty($user)): ?>
-            <div class="card shadow p-3 mt-3">
-                <div class="card-body">
-                    <p><strong>User ID:</strong> <?= $user['user_id'] ?></p>
-                    <p><strong>Name:</strong> <?= $user['name'] ?></p>
-                    <p><strong>Email:</strong> <?= $user['email'] ?></p>
-                    <p><strong>Phone:</strong> <?= $user['phone'] ?></p>
-                    <p><strong>Role:</strong> <?= $user['role'] ?></p>
-                    <p><strong>Society ID:</strong> <?= $user['society_id'] ?></p>
-                    <p><strong>Society Name:</strong> <?= $user['society_name'] ?></p>
-                    <p><strong>Society Address:</strong> <?= $user['society_address'] ?></p>
-                    <?php if (!empty($user['apartment_number'])): ?>
-                        <p><strong>Apartment Number:</strong> <?= $user['apartment_number'] ?></p>
-                    <?php endif; ?>
-                    <?php if (!empty($user['owner_name']) && $user['role'] === 'Member'): ?>
-                        <p><strong>Owner Name:</strong> <?= $user['owner_name'] ?></p>
-                    <?php endif; ?>
-                </div>
-            </div>
-        <?php else: ?>
-            <div class="alert alert-danger">User not found or session expired.</div>
-        <?php endif; ?>
+        <h2>Maintenance Bill</h2>
+
+        <!-- Bill Information -->
+        <div class="alert alert-info">
+            <strong>Water Bill:</strong> ₹500<br>
+            <strong>Electricity Bill:</strong> ₹300<br>
+            <strong>Maintenance Charge:</strong> ₹150<br>
+            <strong>Total Amount:</strong> ₹950<br>
+            <strong>Due Date:</strong> 2025-05-15<br>
+            <strong>Status:</strong> <span id="status">Unpaid</span><br>
+        </div>
+
+        <!-- QR Code Section -->
+        <div class="alert alert-warning">
+            <p>Scan the QR code image available below to make the payment.</p>
+            <img src="images/qr_code.png" class="qr-code" alt="QR Code">
+        </div>
+
+        <!-- Payment Confirmation -->
+        <button type="button" class="btn btn-success" onclick="markAsPaid()">Mark as Paid</button>
+
+        <!-- Payment Status Message -->
+        <div id="paymentStatusMessage" class="mt-3"></div>
     </div>
 </div>
 
@@ -137,6 +174,21 @@ if ($result->num_rows === 1) {
     <p style="margin: 0;">© 2025 CHSMITRA. All rights reserved.</p>
 </footer>
 
+<script>
+    // Function to simulate marking the bill as paid
+    function markAsPaid() {
+        // Check if the bill is already paid
+        var status = document.getElementById('status').innerText;
+
+        if (status === 'Paid') {
+            alert("This bill is already marked as paid.");
+        } else {
+            // Simulate payment update
+            document.getElementById('status').innerText = 'Paid';
+            document.getElementById('paymentStatusMessage').innerHTML = '<div class="alert alert-success">✅ Payment status updated to "Paid".</div>';
+        }
+    }
+</script>
+
 </body>
 </html>
-
