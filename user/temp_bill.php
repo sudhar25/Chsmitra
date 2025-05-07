@@ -33,25 +33,6 @@ $bill = $bill_result->fetch_assoc();
 if (!$bill) {
     die("No maintenance bill available.");
 }
-
- 
-echo "------ Maintenance Bill ------\n";
-echo "Water Bill: ₹" . $bill['water_bill'] . "\n";
-echo "Electricity Bill: ₹" . $bill['electricity_bill'] . "\n";
-echo "Maintenance Charge: ₹" . $bill['maintenance_charge'] . "\n";
-echo "Total Amount: ₹" . ($bill['water_bill'] + $bill['electricity_bill'] + $bill['maintenance_charge']) . "\n";
-echo "Due Date: " . $bill['due_date'] . "\n";
-echo "Status: " . $bill['status'] . "\n";
-
-
-if ($bill['status'] === 'Paid') {
-    echo "This bill is already paid.\n";
-    exit;
-}
-
-echo "\nScan the QR code image available at: images/qr_code.png\n";
-
-echo "\nType 'yes' to mark this bill as paid: ";
 $handle = fopen("php://stdin", "r");
 $input = trim(fgets($handle));
 if (strtolower($input) === 'yes') {
@@ -63,9 +44,7 @@ if (strtolower($input) === 'yes') {
     } else {
         echo " Failed to update payment status.\n";
     }
-} else {
-    echo "Payment not marked. Exiting.\n";
-}
+} 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -158,7 +137,7 @@ if (strtolower($input) === 'yes') {
         <!-- QR Code Section -->
         <div class="alert alert-warning">
             <p>Scan the QR code image available below to make the payment.</p>
-            <img src="images/qr_code.png" class="qr-code" alt="QR Code">
+            <img src="../Images/qr_code.png" class="qr-code" alt="QR Code">
         </div>
 
         <!-- Payment Confirmation -->
