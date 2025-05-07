@@ -3,7 +3,7 @@ session_start();
 
 // Check if the user is logged in and has the 'Member' role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_complaint'])) {
         <h2>Submit a Complaint</h2>
 
         <!-- Complaint Form -->
-        <form action="submit_complaint.php" method="POST" enctype="multipart/form-data">
+        <form action="" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="apartment_id">Apartment ID</label>
                 <input type="number" class="form-control" id="apartment_id" name="apartment_id" required>

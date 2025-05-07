@@ -1,48 +1,52 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 include '../db.php';
 
 if (isset($_POST['register'])) {
   $society_id = $_POST['society_id'];
-  $apartment_number = $_POST['apartment_number']; // Get from form
-  $status = $_POST['status']; // 'Owner' or 'Tenant'
+  $role = $_POST['role'];
 
-  // First, get the apartment_id from apartment_number and society_id
-  $stmt = $conn->prepare("SELECT apartment_id, owner_id, tenant_id FROM Apartments WHERE society_id = ? AND apartment_number = ?");
-  $stmt->bind_param("is", $society_id, $apartment_number);
-  $stmt->execute();
-  $result = $stmt->get_result();
-
-  if ($result->num_rows === 0) {
-      echo "Apartment not found in this society.";
-      exit;
-  }
-
-  $row = $result->fetch_assoc();
-  $apartment_id = $row['apartment_id'];
-
-  // Ownership check
-  if ($status === 'Owner' && !is_null($row['owner_id'])) {
-      echo "This apartment already has an owner!";
-      exit;
-  }
-
-  if ($status === 'Tenant' && !is_null($row['tenant_id'])) {
-      echo "This apartment already has a tenant!";
-      exit;
-  }
-
-  // Proceed with inserting user and updating Apartments
   $name = $_POST['name'];
   $email = $_POST['email'];
   $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-  $role = $_POST['role'];
   $phone = $_POST['phone'];
 
+  // Skip apartment logic for Admin or Security Guard
+  if ($role === 'Member') {
+      $apartment_number = $_POST['apartment_number'];
+      $status = $_POST['status']; // 'Owner' or 'Tenant'
+
+      // First, get the apartment_id from apartment_number and society_id
+      $stmt = $conn->prepare("SELECT apartment_id, owner_id, tenant_id FROM Apartments WHERE society_id = ? AND apartment_number = ?");
+      $stmt->bind_param("is", $society_id, $apartment_number);
+      $stmt->execute();
+      $result = $stmt->get_result();
+
+      if ($result->num_rows === 0) {
+          echo "Apartment not found in this society.";
+          exit;
+      }
+
+      $row = $result->fetch_assoc();
+      $apartment_id = $row['apartment_id'];
+
+      // Ownership check
+      if ($status === 'Owner' && !is_null($row['owner_id'])) {
+          echo "This apartment already has an owner!";
+          exit;
+      }
+
+      if ($status === 'Tenant' && !is_null($row['tenant_id'])) {
+          echo "This apartment already has a tenant!";
+          exit;
+      }
+  }
+
+  // Insert the user
   $sql = "INSERT INTO Users (society_id, name, email, password_hash, role, phone) VALUES (?, ?, ?, ?, ?, ?)";
   $stmt = $conn->prepare($sql);
   $stmt->bind_param("isssss", $society_id, $name, $email, $password, $role, $phone);
@@ -50,14 +54,16 @@ if (isset($_POST['register'])) {
   if ($stmt->execute()) {
       $user_id = $stmt->insert_id;
 
-      if ($status === 'Owner') {
-          $update = $conn->prepare("UPDATE Apartments SET owner_id = ? WHERE apartment_id = ?");
-      } else {
-          $update = $conn->prepare("UPDATE Apartments SET tenant_id = ? WHERE apartment_id = ?");
+      // Only update Apartments if user is a Member
+      if ($role === 'Member') {
+          if ($status === 'Owner') {
+              $update = $conn->prepare("UPDATE Apartments SET owner_id = ? WHERE apartment_id = ?");
+          } else {
+              $update = $conn->prepare("UPDATE Apartments SET tenant_id = ? WHERE apartment_id = ?");
+          }
+          $update->bind_param("ii", $user_id, $apartment_id);
+          $update->execute();
       }
-
-      $update->bind_param("ii", $user_id, $apartment_id);
-      $update->execute();
 
       echo "Registration successful!";
   } else {
@@ -65,6 +71,7 @@ if (isset($_POST['register'])) {
   }
 }
 ?>
+
 
 <!-- Registration Form -->
 <!DOCTYPE html>
@@ -160,54 +167,68 @@ if (isset($_POST['register'])) {
 
       <!-- Main Content -->
       <div class="col-md-9 p-4">
-        <h2 class="mb-4">Register User</h2>
-        <form method="POST" action="">
-          <div class="form-group">
-            <label>Society ID:</label>
-            <input type="number" name="society_id" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Apartment Number:</label>
-            <input type="number" name="Apartment Number" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Name:</label>
-            <input type="text" name="name" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Email:</label>
-            <input type="email" name="email" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Password:</label>
-            <input type="password" name="password" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Role:</label>
-            <select name="role" class="form-control" required>
-              <option value="Admin">Admin</option>
-              <option value="Member">Member</option>
-              <option value="Security Guard">Security Guard</option>
-            </select>
-          </div>
-          <div class="form-group">
-  <label>Ownership Status:</label>
-  <select name="status" class="form-control" required>
-    <option value="" disabled selected>Owner</option>
-    <option value="Owner">Owner</option>
-    <option value="Tenant">Tenant</option>
-  </select>
+  <h2 class="mb-4">Register User</h2>
+  <form method="POST" action="">
+    <div class="form-group">
+      <label>Society ID:</label>
+      <input type="number" name="society_id" class="form-control" required>
+    </div>
+    <div class="form-group apartment-fields">
+      <label>Apartment Number:</label>
+      <input type="number" name="apartment_number" class="form-control">
+    </div>
+    <div class="form-group">
+      <label>Name:</label>
+      <input type="text" name="name" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label>Email:</label>
+      <input type="email" name="email" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label>Password:</label>
+      <input type="password" name="password" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label>Role:</label>
+      <select name="role" class="form-control" id="role-select" required>
+        <option value="Admin">Admin</option>
+        <option value="Member">Member</option>
+        <option value="Security Guard">Security Guard</option>
+      </select>
+    </div>
+    <div class="form-group apartment-fields">
+      <label>Ownership Status:</label>
+      <select name="status" class="form-control">
+        <option value="" disabled selected>Select Status</option>
+        <option value="Owner">Owner</option>
+        <option value="Tenant">Tenant</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Phone:</label>
+      <input type="text" name="phone" class="form-control">
+    </div>
+    <button type="submit" name="register" class="btn btn-primary">Register</button>
+  </form>
 </div>
 
-          <div class="form-group">
-            <label>Phone:</label>
-            <input type="text" name="phone" class="form-control">
-          </div>
-          <button type="submit" name="register" class="btn btn-primary">Register</button>
-        </form>
-      </div>
-    </div>
-  </div>
+<script>
+  const roleSelect = document.getElementById('role-select');
+  const apartmentFields = document.querySelectorAll('.apartment-fields');
+
+  function toggleApartmentFields() {
+    const role = roleSelect.value;
+    apartmentFields.forEach(field => {
+      field.style.display = (role === 'Member') ? 'block' : 'none';
+      field.querySelector('input, select').required = (role === 'Member');
+    });
+  }
+
+  roleSelect.addEventListener('change', toggleApartmentFields);
+  window.addEventListener('DOMContentLoaded', toggleApartmentFields);
+</script>
+
 
   <!-- Footer -->
   <footer class="text-center" style="background-color: #ADD8E6; padding: 10px; margin-top: 20px; font-size: 0.85rem;">

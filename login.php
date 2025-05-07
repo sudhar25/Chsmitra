@@ -26,11 +26,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Redirect based on role
             if ($role === 'Admin') {
-                header("Location: admin_home.php");
+                header("Location: admin/admin_home.php");
             } elseif ($role === 'Security Guard') {
-                header("Location: security_home.php");
+                header("Location: security/security_home.php");
             } else {
-                header("Location: user_home.php");
+                header("Location: user/user_home.php");
             }
             exit();
         } else {

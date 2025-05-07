@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 include '../db.php';
@@ -140,7 +140,7 @@ $result = $conn->query($sql);
                     <td>
                         <form method="POST">
                             <input type="hidden" name="visitor_id" value="<?= $row['visitor_id']; ?>">
-                            <button type="submit" name="approve_visitor" class="btn btn-success btn-sm">
+                            <button type="submit" name="approve_admin" class="btn btn-success btn-sm">
                                 Approve
                             </button>
                         </form>

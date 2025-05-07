@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Security Guard') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 include '../db.php';
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['approve_security'])) {
                     <td>
                         <form method="POST">
                             <input type="hidden" name="visitor_id" value="<?= $row['visitor_id']; ?>">
-                            <button type="submit" name="approve_visitor" class="btn btn-success btn-sm">Approve</button>
+                            <button type="submit" name="approve_security" class="btn btn-success btn-sm">Approve</button>
                         </form>
                     </td>
                 </tr>
