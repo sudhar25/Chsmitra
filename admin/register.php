@@ -160,11 +160,15 @@ if (isset($_POST['register'])) {
 
       <!-- Main Content -->
       <div class="col-md-9 p-4">
-        <h4 class="mb-4">Register User</h4>
+        <h2 class="mb-4">Register User</h2>
         <form method="POST" action="">
           <div class="form-group">
             <label>Society ID:</label>
             <input type="number" name="society_id" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Apartment Number:</label>
+            <input type="number" name="Apartment Number" class="form-control" required>
           </div>
           <div class="form-group">
             <label>Name:</label>
