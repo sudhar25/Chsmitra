@@ -1,11 +1,11 @@
 <?php
 include '../db.php';
 session_start();
-//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
-    //header("Location: login.php");
-    //exit();
-//}    
-//$user_id = $_SESSION['user_id'] ?? 1;
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
+    header("Location: login.php");
+    exit();
+}    
+$user_id = $_SESSION['user_id'] ?? 1;
 
 // Get user's society ID
 $stmt = $conn->prepare("SELECT society_id FROM Users WHERE user_id = ?");

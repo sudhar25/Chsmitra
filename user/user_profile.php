@@ -1,12 +1,12 @@
 <?php
 session_start();
-//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
-  //  header("Location: login.php");
-    //exit();
-//}
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
+    header("Location: login.php");
+    exit();
+}
 include '../db.php';
 
-//$user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];
 $sql = "SELECT 
             u.user_id,
             u.society_id,
@@ -26,17 +26,17 @@ $sql = "SELECT
         WHERE u.user_id = ?";
 
 
-//$stmt = $conn->prepare($sql);
-//$stmt->bind_param("i")//, //$user_id);
-//$stmt->execute();
-//$result = $stmt->get_result();
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-//if ($result->num_rows === 1) {
-  //  $user = $result->fetch_assoc();
-//} else {
-  //  echo "User not found.";
-    //exit();
-//}
+if ($result->num_rows === 1) {
+    $user = $result->fetch_assoc();
+} else {
+    echo "User not found.";
+    exit();
+}
 ?>
 
 <!DOCTYPE html>

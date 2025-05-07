@@ -1,41 +1,41 @@
 <?php
-//session_start();
+session_start();
 
-//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
-  //  header("Location: login.php");
-    //exit();
-//}
-//include '../db.php';
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
+    header("Location: login.php");
+    exit();
+}
+include '../db.php';
 
 
 
 // Get apartment ID of the user (owner or tenant)
-//$sql = "SELECT a.apartment_id, a.society_id
-  //      FROM Apartments a
-    //    WHERE a.owner_id = ? OR a.tenant_id = ?";
-//$stmt = $conn->prepare($sql);
-//$stmt->bind_param("ii", $user_id, $user_id);
-//$stmt->execute();
-//$result = $stmt->get_result();
-//$apartment = $result->fetch_assoc();
+$sql = "SELECT a.apartment_id, a.society_id
+        FROM Apartments a
+        WHERE a.owner_id = ? OR a.tenant_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $user_id, $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$apartment = $result->fetch_assoc();
 
-//if (!$apartment) {
-  //  echo "No apartment found for the user.";
-    //exit;
-//}
+if (!$apartment) {
+    echo "No apartment found for the user.";
+    exit;
+}
 
-//$apartment_id = $apartment['apartment_id'];
-//$society_id = $apartment['society_id'];
+$apartment_id = $apartment['apartment_id'];
+$society_id = $apartment['society_id'];
 
 // Get latest unpaid bill
-//$bill_sql = "SELECT * FROM Maintenance 
-  //           WHERE apartment_id = ? AND status = 'Pending'
-    //         ORDER BY due_date DESC LIMIT 1";
-//$bill_stmt = $conn->prepare($bill_sql);
-//$bill_stmt->bind_param("i", $apartment_id);
-//$bill_stmt->execute();
-//$bill_result = $bill_stmt->get_result();
-//$bill = $bill_result->fetch_assoc();
+$bill_sql = "SELECT * FROM Maintenance 
+             WHERE apartment_id = ? AND status = 'Pending'
+             ORDER BY due_date DESC LIMIT 1";
+$bill_stmt = $conn->prepare($bill_sql);
+$bill_stmt->bind_param("i", $apartment_id);
+$bill_stmt->execute();
+$bill_result = $bill_stmt->get_result();
+$bill = $bill_result->fetch_assoc();
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -2,10 +2,10 @@
 session_start();
 
 // Check if the user is logged in and has the 'Member' role
-//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
-    //header("Location: login.php");
-    //exit();
-//}
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
+    header("Location: login.php");
+    exit();
+}
 
 include '../db.php';
 

@@ -2,10 +2,10 @@
 include '../db.php';
 session_start();
 
-//if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
-  //  header("Location: login.php");
-    //exit();
-//}
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Member') {
+    header("Location: login.php");
+    exit();
+}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $bill_id = $_POST['bill_id'];
